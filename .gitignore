@@ -9,4 +9,4 @@ node_modules/
 .env
 
 # Database
-./mongodb/
+mongodb/
