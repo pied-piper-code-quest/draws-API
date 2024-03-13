@@ -1,2 +1,2 @@
 export { UserAdminEntity } from "./user-admin.entity";
-export { DiscordUserAdminEntity } from "./discord-user.entity";
+export { DiscordUserEntity } from "./discord-user.entity";

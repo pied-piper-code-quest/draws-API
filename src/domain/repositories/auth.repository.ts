@@ -1,4 +1,4 @@
-import { DiscordUserAdminEntity, UserAdminEntity } from "../entities";
+import { DiscordUserEntity, UserAdminEntity } from "../entities";
 import {
   AuthUserFromDiscordDto,
   LoginUserAdminDto,
@@ -8,7 +8,7 @@ import {
 export abstract class AuthRepositoryInterface {
   abstract authFromDiscord(
     authUserFromDiscordDto: AuthUserFromDiscordDto,
-  ): Promise<DiscordUserAdminEntity>;
+  ): Promise<DiscordUserEntity>;
 
   abstract login(
     loginUserAdminDto: LoginUserAdminDto,

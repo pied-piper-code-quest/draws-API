@@ -2,7 +2,7 @@ import { Document, Schema, model } from "mongoose";
 
 // const avatarLink = `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp?size=80`
 
-export interface DiscordUserAdminInterface extends Document {
+export interface DiscordUserInterface extends Document {
   discordId: string;
   username: string;
   avatar: string;
@@ -45,4 +45,4 @@ const discordUserSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-export const DiscordUserAdminModel = model("DiscordUser", discordUserSchema);
+export const DiscordUserModel = model("DiscordUser", discordUserSchema);

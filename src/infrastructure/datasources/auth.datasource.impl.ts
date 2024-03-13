@@ -1,27 +1,43 @@
-import { UserAdminModel } from "../../data/mongo-db";
+import { DiscordUserModel, UserAdminModel } from "../../data/mongo-db";
 import { AuthDatasourceInterface } from "../../domain/datasources/";
-import { DiscordUserAdminEntity, UserAdminEntity } from "../../domain/entities";
+import { DiscordUserEntity, UserAdminEntity } from "../../domain/entities";
 import {
   AuthUserFromDiscordDto,
   LoginUserAdminDto,
   RegisterUserAdminDto,
 } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors";
-import { UserAdminMapper } from "../mappers/user-admin.mapper";
 import type { CompareFunction, HashFunction } from "../interfaces";
+import { DiscordUserMapper, UserAdminMapper } from "../mappers";
 
 export class AuthDatasource implements AuthDatasourceInterface {
   constructor(
     private readonly hashPassword: HashFunction,
     private readonly comparePassword: CompareFunction,
   ) {}
-  authFromDiscord(
+  authFromDiscord = async (
     authUserFromDiscordDto: AuthUserFromDiscordDto,
-  ): Promise<DiscordUserAdminEntity> {
-    throw new Error("Method not implemented.");
-  }
+  ): Promise<DiscordUserEntity> => {
+    try {
+      const { discordId } = authUserFromDiscordDto;
+      const user = await DiscordUserModel.findOne({ discordId: discordId });
+      if (user) {
+        console.log("User exist");
+        return DiscordUserMapper.DiscordUserEntityFromObject(user);
+      }
 
-  async login(loginUserAdminDto: LoginUserAdminDto): Promise<UserAdminEntity> {
+      console.log("User doesn't exist. Creating...");
+      const newUser = await DiscordUserModel.create(authUserFromDiscordDto);
+      return DiscordUserMapper.DiscordUserEntityFromObject(newUser);
+    } catch (error) {
+      console.log(error);
+      throw CustomError.internalServer(error);
+    }
+  };
+
+  login = async (
+    loginUserAdminDto: LoginUserAdminDto,
+  ): Promise<UserAdminEntity> => {
     const { username, password } = loginUserAdminDto;
     try {
       const findUser = await UserAdminModel.findOne({ username });
@@ -37,11 +53,11 @@ export class AuthDatasource implements AuthDatasourceInterface {
     } catch (error) {
       this.handleError(error);
     }
-  }
+  };
 
-  async register(
+  register = async (
     registerUserAdminDto: RegisterUserAdminDto,
-  ): Promise<UserAdminEntity> {
+  ): Promise<UserAdminEntity> => {
     const { name, lastName, phone, username, email, password } =
       registerUserAdminDto;
     try {
@@ -68,7 +84,7 @@ export class AuthDatasource implements AuthDatasourceInterface {
     } catch (error) {
       this.handleError(error);
     }
-  }
+  };
 
   private handleError(error: any): never {
     if (error instanceof CustomError) {

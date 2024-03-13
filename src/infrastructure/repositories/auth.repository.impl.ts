@@ -1,6 +1,6 @@
 import { AuthDatasourceInterface } from "../../domain/datasources";
 import { AuthRepositoryInterface } from "../../domain/repositories";
-import { DiscordUserAdminEntity, UserAdminEntity } from "../../domain/entities";
+import { DiscordUserEntity, UserAdminEntity } from "../../domain/entities";
 import {
   AuthUserFromDiscordDto,
   LoginUserAdminDto,
@@ -12,7 +12,7 @@ export class AuthRepository implements AuthRepositoryInterface {
 
   authFromDiscord(
     authUserFromDiscordDto: AuthUserFromDiscordDto,
-  ): Promise<DiscordUserAdminEntity> {
+  ): Promise<DiscordUserEntity> {
     return this.datasource.authFromDiscord(authUserFromDiscordDto);
   }
 

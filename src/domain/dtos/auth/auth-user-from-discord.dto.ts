@@ -1,23 +1,5 @@
 import { DtoResponse } from "../../interfaces";
-
-interface DiscordAccountData {
-  id: string;
-  username: string;
-  avatar: string;
-  discriminator: string;
-  public_flags: number;
-  premium_type: number;
-  flags: number;
-  banner: string | null;
-  accent_color: number | null;
-  global_name: string;
-  avatar_decoration_data: string | null;
-  banner_color: null;
-  mfa_enabled: false;
-  locale: string;
-  email: string;
-  verified: boolean;
-}
+// import type { DiscordUserResponse } from '../../../config/oauth.adapter';
 
 export class AuthUserFromDiscordDto {
   private constructor(
