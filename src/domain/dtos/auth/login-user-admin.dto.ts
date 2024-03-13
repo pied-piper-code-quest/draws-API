@@ -1,12 +1,12 @@
 import { DtoResponse } from "../../interfaces";
 
-export class LoginUserDto {
+export class LoginUserAdminDto {
   private constructor(
     public username: string,
     public password: string,
   ) {}
 
-  static create(props: Record<string, any>): DtoResponse<LoginUserDto> {
+  static create(props: Record<string, any>): DtoResponse<LoginUserAdminDto> {
     const { username, password } = props;
     const errors: string[] = [];
     if (!username) errors.push("username is required");
@@ -19,7 +19,7 @@ export class LoginUserDto {
     }
     return [
       null,
-      new LoginUserDto((username as string).toLowerCase(), password),
+      new LoginUserAdminDto((username as string).toLowerCase(), password),
     ];
   }
 }

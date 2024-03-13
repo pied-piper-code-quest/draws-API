@@ -5,4 +5,4 @@ export { AuthDatasource } from "./datasources/auth.datasource.impl";
 export { AuthRepository } from "./repositories/auth.repository.impl";
 
 // Mappers
-export { UserMapper } from "./mappers/user.mapper";
+export { UserAdminMapper } from "./mappers/user-admin.mapper";

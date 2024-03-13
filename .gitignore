@@ -2,8 +2,8 @@
 node_modules/
 
 # Build Files
-./dist/
-./build/
+dist/
+build/
 
 # Environment Variables
 .env

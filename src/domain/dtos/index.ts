@@ -1,2 +1,3 @@
-export { LoginUserDto } from "./auth/login-user.dto";
-export { RegisterUserDto } from "./auth/register-user.dto";
+export { AuthUserFromDiscordDto } from "./auth/auth-user-from-discord.dto";
+export { LoginUserAdminDto } from "./auth/login-user-admin.dto";
+export { RegisterUserAdminDto } from "./auth/register-user-admin.dto";

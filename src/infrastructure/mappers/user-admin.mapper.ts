@@ -1,10 +1,11 @@
-import { UserEntity } from "../../domain/entities";
+import { UserAdminEntity } from "../../domain/entities";
 import { CustomError } from "../../domain/errors";
 
-export class UserMapper {
-  static UserEntityFromObject(props: Record<string, any>): UserEntity {
-    const { id, _id, username, email, isActive, role, createdAt, updatedAt } =
-      props;
+export class UserAdminMapper {
+  static UserAdminEntityFromObject(
+    props: Record<string, any>,
+  ): UserAdminEntity {
+    const { id, _id, username, email, isActive, createdAt, updatedAt } = props;
 
     if (!id && !_id) {
       throw CustomError.badRequest("Missing id");
@@ -24,11 +25,10 @@ export class UserMapper {
     // if (!password) {
     //   throw CustomError.badRequest("Missing password");
     // }
-    return new UserEntity(
+    return new UserAdminEntity(
       id || _id,
       username,
       email,
-      role,
       // password,
       isActive,
       createdAt,

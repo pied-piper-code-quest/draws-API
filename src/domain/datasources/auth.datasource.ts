@@ -1,8 +1,20 @@
-import { UserEntity } from "../entities";
-import { LoginUserDto, RegisterUserDto } from "../dtos";
+import { DiscordUserAdminEntity, UserAdminEntity } from "../entities";
+import {
+  AuthUserFromDiscordDto,
+  LoginUserAdminDto,
+  RegisterUserAdminDto,
+} from "../dtos";
 
 export abstract class AuthDatasourceInterface {
-  abstract login(loginUserDto: LoginUserDto): Promise<UserEntity>;
+  abstract authFromDiscord(
+    authUserFromDiscordDto: AuthUserFromDiscordDto,
+  ): Promise<DiscordUserAdminEntity>;
 
-  abstract register(registerUserDto: RegisterUserDto): Promise<UserEntity>;
+  abstract login(
+    loginUserAdminDto: LoginUserAdminDto,
+  ): Promise<UserAdminEntity>;
+
+  abstract register(
+    registerUserAdminDto: RegisterUserAdminDto,
+  ): Promise<UserAdminEntity>;
 }

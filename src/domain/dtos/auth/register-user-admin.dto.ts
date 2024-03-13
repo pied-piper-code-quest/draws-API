@@ -1,7 +1,7 @@
 import { Validators } from "../../../config";
 import { DtoResponse } from "../../interfaces";
 
-export class RegisterUserDto {
+export class RegisterUserAdminDto {
   private constructor(
     public name: string,
     public lastName: string,
@@ -11,7 +11,7 @@ export class RegisterUserDto {
     public password: string,
   ) {}
 
-  static create(props: Record<string, any>): DtoResponse<RegisterUserDto> {
+  static create(props: Record<string, any>): DtoResponse<RegisterUserAdminDto> {
     const { name, lastName, phone, username, email, password } = props;
 
     const errors: string[] = [];
@@ -33,7 +33,7 @@ export class RegisterUserDto {
 
     return [
       null,
-      new RegisterUserDto(
+      new RegisterUserAdminDto(
         name,
         lastName,
         phone,

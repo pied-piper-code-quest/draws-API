@@ -1,15 +1,13 @@
 import { Document, Schema, model } from "mongoose";
-import { Roles } from "../../../domain/entities";
 
-export interface UserInterface extends Document {
+export interface UserAdminInterface extends Document {
   username: string;
   email: string;
   password: string;
-  role: Roles;
   isActive: boolean;
 }
 
-const userSchema = new Schema(
+const userAdminSchema = new Schema(
   {
     username: {
       type: Schema.Types.String,
@@ -23,11 +21,6 @@ const userSchema = new Schema(
       type: Schema.Types.String,
       required: [true, "Password is required"],
     },
-    role: {
-      type: Schema.Types.String,
-      default: Roles.user,
-      enum: [Roles.user, Roles.admin],
-    },
     isActive: {
       type: Schema.Types.Boolean,
       default: true,
@@ -39,4 +32,7 @@ const userSchema = new Schema(
   },
 );
 
-export const UserModel = model<UserInterface>("User", userSchema);
+export const UserAdminModel = model<UserAdminInterface>(
+  "User-Admin",
+  userAdminSchema,
+);

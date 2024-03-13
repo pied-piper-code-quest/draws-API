@@ -1,9 +1,13 @@
-import { UserModel } from "../../data/mongodb";
+import { UserAdminModel } from "../../data/mongo-db";
 import { AuthDatasourceInterface } from "../../domain/datasources/";
-import { UserEntity } from "../../domain/entities";
-import { LoginUserDto, RegisterUserDto } from "../../domain/dtos";
+import { DiscordUserAdminEntity, UserAdminEntity } from "../../domain/entities";
+import {
+  AuthUserFromDiscordDto,
+  LoginUserAdminDto,
+  RegisterUserAdminDto,
+} from "../../domain/dtos";
 import { CustomError } from "../../domain/errors";
-import { UserMapper } from "../mappers/user.mapper";
+import { UserAdminMapper } from "../mappers/user-admin.mapper";
 import type { CompareFunction, HashFunction } from "../interfaces";
 
 export class AuthDatasource implements AuthDatasourceInterface {
@@ -11,11 +15,16 @@ export class AuthDatasource implements AuthDatasourceInterface {
     private readonly hashPassword: HashFunction,
     private readonly comparePassword: CompareFunction,
   ) {}
+  authFromDiscord(
+    authUserFromDiscordDto: AuthUserFromDiscordDto,
+  ): Promise<DiscordUserAdminEntity> {
+    throw new Error("Method not implemented.");
+  }
 
-  async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
-    const { username, password } = loginUserDto;
+  async login(loginUserAdminDto: LoginUserAdminDto): Promise<UserAdminEntity> {
+    const { username, password } = loginUserAdminDto;
     try {
-      const findUser = await UserModel.findOne({ username });
+      const findUser = await UserAdminModel.findOne({ username });
       if (!findUser) {
         throw CustomError.badRequest("Invalid Credentials");
       }
@@ -24,17 +33,19 @@ export class AuthDatasource implements AuthDatasourceInterface {
         throw CustomError.badRequest("Invalid Credentials");
       }
 
-      return UserMapper.UserEntityFromObject(findUser);
+      return UserAdminMapper.UserAdminEntityFromObject(findUser);
     } catch (error) {
       this.handleError(error);
     }
   }
 
-  async register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
+  async register(
+    registerUserAdminDto: RegisterUserAdminDto,
+  ): Promise<UserAdminEntity> {
     const { name, lastName, phone, username, email, password } =
-      registerUserDto;
+      registerUserAdminDto;
     try {
-      const findUser = await UserModel.findOne({
+      const findUser = await UserAdminModel.findOne({
         $or: [{ username }, { email }],
       });
       if (findUser) {
@@ -42,7 +53,7 @@ export class AuthDatasource implements AuthDatasourceInterface {
         throw CustomError.badRequest("Invalid Credentials");
       }
 
-      const user = await UserModel.create({
+      const user = await UserAdminModel.create({
         name,
         lastName,
         phone,
@@ -53,7 +64,7 @@ export class AuthDatasource implements AuthDatasourceInterface {
 
       await user.save();
 
-      return UserMapper.UserEntityFromObject(user);
+      return UserAdminMapper.UserAdminEntityFromObject(user);
     } catch (error) {
       this.handleError(error);
     }
