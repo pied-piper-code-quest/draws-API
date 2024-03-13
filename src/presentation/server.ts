@@ -3,6 +3,7 @@ import { Server as WebsocketsServer } from "socket.io";
 import http from "http";
 import cors from "cors";
 import morgan from "morgan";
+import { envs } from "../config";
 
 interface Options {
   port: number;
@@ -28,7 +29,8 @@ export class Server {
 
   async start() {
     // Middlewares
-    this.app.use(cors({ origin: "*" }));
+    this.app.use(cors({ origin: [envs.CLIENT_URL], credentials: true }));
+    // this.app.use(cors({ origin: "*", credentials: true }));
     this.app.use(this.logger("dev"));
     this.app.use(express.json());
     // this.app.use(express.urlencoded({ extended: true }));
