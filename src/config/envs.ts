@@ -8,6 +8,10 @@ interface EnvironmentVariables {
   MONGO_DB_NAME: string;
   MONGO_USERNAME: string;
   MONGO_PASSWORD: string;
+  DISCORD_CLIENT_ID: string;
+  DISCORD_CLIENT_SECRET: string;
+  REDIRECT_URL: string;
+  CLIENT_URL: string;
 }
 
 class EnvConfig {
@@ -20,6 +24,10 @@ class EnvConfig {
         MONGO_DB_NAME: joi.string().required(),
         MONGO_USERNAME: joi.string().required(),
         MONGO_PASSWORD: joi.string().required(),
+        DISCORD_CLIENT_ID: joi.string().required(),
+        DISCORD_CLIENT_SECRET: joi.string().required(),
+        REDIRECT_URL: joi.string().required(),
+        CLIENT_URL: joi.string().default("*"),
       })
       .unknown(true);
 
@@ -38,6 +46,10 @@ class EnvConfig {
       MONGO_DB_NAME: envVars.MONGO_DB_NAME,
       MONGO_USERNAME: envVars.MONGO_USERNAME,
       MONGO_PASSWORD: envVars.MONGO_PASSWORD,
+      DISCORD_CLIENT_ID: envVars.DISCORD_CLIENT_ID,
+      DISCORD_CLIENT_SECRET: envVars.DISCORD_CLIENT_SECRET,
+      REDIRECT_URL: envVars.REDIRECT_URL,
+      CLIENT_URL: envVars.CLIENT_URL,
     } as const;
   }
 }
