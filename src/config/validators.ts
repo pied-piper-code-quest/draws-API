@@ -7,4 +7,11 @@ export class Validators {
     const phoneRegex = /^\+?([0-9]{1,2})\)?([0-9]{10})$/;
     return phoneRegex.test(value);
   }
+  static isDate(value: any) {
+    const parseDate = new Date(value).toString();
+    return parseDate !== "Invalid Date";
+  }
+  static isBoolean(value: any) {
+    return typeof value === "boolean";
+  }
 }
