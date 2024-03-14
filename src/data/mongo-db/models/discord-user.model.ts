@@ -1,17 +1,9 @@
-import { Document, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
+import type { DiscordUserInterface } from "../interfaces";
 
 // const avatarLink = `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp?size=80`
 
-export interface DiscordUserInterface extends Document {
-  discordId: string;
-  username: string;
-  avatar: string;
-  discriminator: string;
-  globalName: string;
-  email: string;
-  verified: boolean;
-}
-const discordUserSchema = new Schema(
+const discordUserSchema = new Schema<DiscordUserInterface>(
   {
     discordId: {
       type: Schema.Types.String,

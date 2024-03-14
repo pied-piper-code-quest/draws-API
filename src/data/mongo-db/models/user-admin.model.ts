@@ -1,13 +1,7 @@
-import { Document, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
+import type { UserAdminInterface } from "../interfaces";
 
-export interface UserAdminInterface extends Document {
-  username: string;
-  email: string;
-  password: string;
-  isActive: boolean;
-}
-
-const userAdminSchema = new Schema(
+const userAdminSchema = new Schema<UserAdminInterface>(
   {
     username: {
       type: Schema.Types.String,
