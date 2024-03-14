@@ -27,7 +27,7 @@ export class AuthRoutes {
 
     router.get(
       "/verify-token",
-      authMiddleware.ValidateDiscordUser,
+      authMiddleware.ValidateUser(),
       controller.verifyJWTToken,
     );
 

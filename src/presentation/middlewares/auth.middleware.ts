@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { JwtAdapter } from "../../config/jwt.adapter";
+import { JwtAdapter, type TokenPayload } from "../../config/jwt.adapter";
 import { DiscordUserModel, UserAdminModel } from "../../data/mongo-db";
 import { CustomError } from "../../domain/errors";
 import { ResponseError } from "../custom-errors";
+import { UserType } from "../../domain/entities";
 
 class AuthMiddleware {
   private readonly handleError = ResponseError;
@@ -25,14 +26,13 @@ class AuthMiddleware {
     }
     return payload;
   };
-
-  ValidateUserAdmin = async (
+  private ValidateUserAdmin = async (
     req: Request,
     res: Response,
     next: NextFunction,
+    payload: TokenPayload,
   ) => {
     try {
-      const { payload } = await this.ValidateJWT(req, res);
       const user = await UserAdminModel.findById(payload.id);
       if (!user) {
         throw this.JWTError;
@@ -46,18 +46,20 @@ class AuthMiddleware {
 
       // @ts-ignore
       req.userAdmin = user;
+      // @ts-ignore
+      req.userType = UserType.admin;
       next();
     } catch (error) {
       this.handleError(error, res);
     }
   };
-  ValidateDiscordUser = async (
+  private ValidateDiscordUser = async (
     req: Request,
     res: Response,
     next: NextFunction,
+    payload: TokenPayload,
   ) => {
     try {
-      const { payload } = await this.ValidateJWT(req, res);
       const discordUser = await DiscordUserModel.findById(payload.id);
       if (!discordUser) {
         throw this.JWTError;
@@ -65,10 +67,36 @@ class AuthMiddleware {
 
       // @ts-ignore
       req.discordUser = discordUser;
+      // @ts-ignore
+      req.userType = UserType.discord;
       next();
     } catch (error) {
       this.handleError(error, res);
     }
   };
+
+  ValidateUser =
+    (...userTypes: UserType[]) =>
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const payload = await this.ValidateJWT(req, res);
+        if (
+          userTypes &&
+          userTypes.length > 0 &&
+          !userTypes.includes(payload.userType)
+        ) {
+          throw CustomError.unauthorized("Unauthorized");
+        }
+        if (payload.userType === UserType.admin) {
+          return this.ValidateUserAdmin(req, res, next, payload);
+        }
+        if (payload.userType === UserType.discord) {
+          return this.ValidateDiscordUser(req, res, next, payload);
+        }
+        throw this.JWTError;
+      } catch (error) {
+        this.handleError(error, res);
+      }
+    };
 }
 export const authMiddleware = new AuthMiddleware();

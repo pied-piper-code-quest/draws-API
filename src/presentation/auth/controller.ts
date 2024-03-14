@@ -7,9 +7,10 @@ import {
 } from "../../domain/dtos";
 import { AuthRepositoryInterface } from "../../domain/repositories";
 import { ResponseError } from "../custom-errors";
-import { JwtAdapter } from "../../config/jwt.adapter";
+import { JwtAdapter, TokenPayload } from "../../config/jwt.adapter";
 import { CustomError } from "../../domain/errors";
 import { DiscordUserResponse, TokenResponse } from "../../config/oauth.adapter";
+import { UserType } from "../../domain/entities";
 
 export class AuthController {
   private handleError = ResponseError;
@@ -25,7 +26,10 @@ export class AuthController {
 
     try {
       const user = await this.authRepository.register(registerUserAdminDto);
-      const token = await this.generateUserToken({ id: user.id });
+      const token = await this.generateUserToken({
+        id: user.id,
+        userType: UserType.admin,
+      });
       res.status(201).json({ user, token });
     } catch (error) {
       this.handleError(error, res);
@@ -38,7 +42,10 @@ export class AuthController {
 
     try {
       const user = await this.authRepository.login(loginUserAdminDto);
-      const token = await this.generateUserToken(user.id);
+      const token = await this.generateUserToken({
+        id: user.id,
+        userType: UserType.admin,
+      });
       res.status(201).json({ user, token });
     } catch (error) {
       this.handleError(error, res);
@@ -86,19 +93,18 @@ export class AuthController {
       }
       const responseUser: DiscordUserResponse = await requestUser.json();
 
-      console.log("responseUser: ", responseUser);
       const [error, authUserFromDiscordDto] =
         AuthUserFromDiscordDto.create(responseUser);
       if (error !== null)
         throw CustomError.internalServer(
           "Bad format in authUserFromDiscordDto",
         );
-      console.log("authUserFromDiscordDto: ", authUserFromDiscordDto);
       const discordUser = await this.authRepository.authFromDiscord(
         authUserFromDiscordDto,
       );
       const newToken = await this.generateUserToken({
         id: discordUser.id,
+        userType: UserType.discord,
       });
       return res.json({
         user: responseUser,
@@ -112,29 +118,13 @@ export class AuthController {
 
   verifyJWTToken = async (req: Request, res: Response) => {
     // @ts-ignore
-    const discordUser = req.discordUser;
-    res.send({ data: discordUser });
+    const user = req.discordUser || req.userAdmin;
+    // @ts-ignore
+    const userType = req.userType;
+    res.send({ user, userType });
   };
 
-  authUserFromDiscord = async (req: Request, res: Response) => {
-    const [error, loginUserAdminDto] = LoginUserAdminDto.create(req.body);
-    if (error !== null) return res.status(400).json({ message: error });
-
-    try {
-      const user = await this.authRepository.login(loginUserAdminDto);
-      const token = await this.generateUserToken({ id: user.id });
-      res.status(201).json({ user, token });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
-  private generateUserToken = <T = { id: string }>(payload: T) => {
-    return JwtAdapter.generateToken({
-      // username: user.username,
-      // email: user.email,
-      // id: id,
-      payload,
-    });
+  private generateUserToken = (payload: TokenPayload) => {
+    return JwtAdapter.generateToken(payload);
   };
 }

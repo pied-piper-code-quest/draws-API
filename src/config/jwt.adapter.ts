@@ -1,17 +1,14 @@
 import jwt from "jsonwebtoken";
 import { envs } from "./envs";
+import { UserType } from "../domain/entities";
 
 const JWT_SEED = envs.JWT_SECRET_KEY;
 
-interface TokenPayload<T> {
-  payload: T;
-  iat: number;
-  exp: number;
-}
+export type TokenPayload = { id: string; userType: UserType };
 
 export class JwtAdapter {
   static async generateToken(
-    payload: Object,
+    payload: TokenPayload,
     duration: string = "7d",
   ): Promise<string | null> {
     return new Promise(resolve => {
@@ -22,13 +19,11 @@ export class JwtAdapter {
     });
   }
 
-  static verifyToken<T = { id: string }>(
-    token: string,
-  ): Promise<TokenPayload<T> | null> {
+  static verifyToken(token: string): Promise<TokenPayload | null> {
     return new Promise(resolve => {
       jwt.verify(token, JWT_SEED, (err, decoded: any) => {
         if (err || !decoded) return resolve(null);
-        resolve(decoded as TokenPayload<T>);
+        resolve(decoded as TokenPayload);
       });
     });
   }
