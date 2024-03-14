@@ -1,8 +1,8 @@
 {
   "name": "pied-piper-api",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Backend de la app de gestión de sorteos desarrollada por el equipo Pied Piper para el Code Quest 2024 de DevTalles",
-  "main": "index.js",
+  "main": ".dist/app.js",
   "scripts": {
     "dev": "tsnd --respawn --clear src/app.ts",
     "build": "rimraf ./dist && tsc",
