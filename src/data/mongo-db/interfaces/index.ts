@@ -11,6 +11,7 @@ export interface UserAdminInterface {
 
 // export interface DiscordUserBase {
 export interface DiscordUserInterface {
+  access_token: string;
   discordId: string;
   username: string;
   avatar: string;

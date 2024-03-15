@@ -5,6 +5,10 @@ import type { DiscordUserInterface } from "../interfaces";
 
 const discordUserSchema = new Schema<DiscordUserInterface>(
   {
+    access_token: {
+      type: Schema.Types.String,
+      required: true,
+    },
     discordId: {
       type: Schema.Types.String,
       required: true,

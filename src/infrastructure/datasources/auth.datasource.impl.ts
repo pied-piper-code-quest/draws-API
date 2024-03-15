@@ -12,14 +12,13 @@ export class AuthDatasource implements AuthDatasourceInterface {
     authUserFromDiscordDto: AuthUserFromDiscordDto,
   ): Promise<DiscordUserEntity> => {
     try {
-      const { discordId } = authUserFromDiscordDto;
+      const { discordId, access_token } = authUserFromDiscordDto;
       const user = await DiscordUserModel.findOne({ discordId: discordId });
       if (user) {
-        console.log("User exist");
+        user.access_token = access_token;
+        await user.save();
         return DiscordUserMapper.DiscordUserEntityFromObject(user);
       }
-
-      console.log("User doesn't exist. Creating...");
       const newUser = await DiscordUserModel.create(authUserFromDiscordDto);
       return DiscordUserMapper.DiscordUserEntityFromObject(newUser);
     } catch (error) {

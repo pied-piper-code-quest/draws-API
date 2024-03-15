@@ -51,6 +51,7 @@ export class AuthController {
     try {
       const tokenProps = this.OAuth.tokenProps(code);
 
+      // Verificar si el usuario existe en discord
       const request = await fetch(`${this.OAuth.config.tokenUrl}`, {
         method: "POST",
         headers: {
@@ -59,13 +60,12 @@ export class AuthController {
         },
         body: tokenProps.params,
       });
-      console.log("status: ", request.status);
       if (request.status !== 200) {
         throw CustomError.unauthorized("Unauthorized");
       }
       const { access_token, token_type }: TokenResponse = await request.json();
-      // Get user info from id token
 
+      // Obtener datos del usuario por medio de su token
       const requestUser = await fetch(this.OAuth.config.userUrl, {
         method: "GET",
         headers: {
@@ -77,8 +77,10 @@ export class AuthController {
       }
       const responseUser: DiscordUserResponse = await requestUser.json();
 
-      const [error, authUserFromDiscordDto] =
-        AuthUserFromDiscordDto.create(responseUser);
+      const [error, authUserFromDiscordDto] = AuthUserFromDiscordDto.create({
+        ...responseUser,
+        access_token,
+      });
       if (error !== null)
         throw CustomError.internalServer(
           "Bad format in authUserFromDiscordDto",

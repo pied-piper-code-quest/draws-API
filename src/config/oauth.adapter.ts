@@ -27,18 +27,30 @@ export interface DiscordUserResponse {
   verified: boolean;
 }
 
-export function parseQueryParams(props: Record<string, any>): URLSearchParams {
-  const queryParams = new URLSearchParams();
-  Object.entries(props).forEach(([key, value]) => {
-    queryParams.append(key, value);
-  });
-  return queryParams;
+class parseQueryParams {
+  static toString(props: Record<string, any>): string {
+    const params: string[] = [];
+    Object.entries(props).forEach(([key, value]) => {
+      params.push(`${key}=${value}`);
+    });
+    return params.join("&");
+  }
+  static toURLSearchParams(props: Record<string, any>): URLSearchParams {
+    const queryParams = new URLSearchParams();
+    Object.entries(props).forEach(([key, value]) => {
+      queryParams.append(key, value);
+    });
+    return queryParams;
+  }
 }
 
 export abstract class OAuthProvider {
   abstract get config(): any;
   abstract get authParams(): any;
-  abstract tokenProps: (props: any) => any;
+  abstract tokenProps: (code: string) => {
+    auth: string;
+    params: URLSearchParams;
+  };
 }
 class DiscordProvider implements OAuthProvider {
   get config() {
@@ -57,21 +69,18 @@ class DiscordProvider implements OAuthProvider {
   }
 
   get authParams() {
-    return parseQueryParams({
+    return parseQueryParams.toString({
       client_id: this.config.clientId,
       // redirect_uri: discordConfig.redirectUrl,
       response_type: "code",
-      scope: "identify",
-      access_type: "offline",
-      state: "standard_oauth",
-      prompt: "consent",
-    }).toString();
+      scope: "guilds.members.read+identify",
+    });
   }
 
   tokenProps = (code: string): { auth: string; params: URLSearchParams } => {
     return {
       auth: `Basic ${btoa(`${envs.DISCORD_CLIENT_ID}:${envs.DISCORD_CLIENT_SECRET}`)}`,
-      params: parseQueryParams({
+      params: parseQueryParams.toURLSearchParams({
         client_id: envs.DISCORD_CLIENT_ID,
         client_secret: envs.DISCORD_CLIENT_SECRET,
         grant_type: "authorization_code",
