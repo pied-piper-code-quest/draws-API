@@ -7,7 +7,7 @@ export class FinishDrawDtoDto {
     const { winners } = props;
     const errors: string[] = [];
     if (!winners) errors.push("winners is required");
-    if (winners.length === 0)
+    if (winners && winners.length === 0)
       errors.push("winners should contains at least 1 user");
 
     if (errors.length > 0) {

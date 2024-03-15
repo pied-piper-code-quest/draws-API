@@ -119,9 +119,6 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
     drawId: string,
     discordId: string,
   ): Promise<DrawEntity> => {
-    // TODO: Implementar lógica para verificar que el usuario existe en BBDD
-    // TODO: Implementar lógica para validar que el usuario está en la comunidad de discord
-
     const draw = await this.findOneById(drawId);
     const drawParticipants = draw.participants as string[];
     if (drawParticipants.includes(discordId))

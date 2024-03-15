@@ -1,3 +1,4 @@
+import { Validators } from "../../config";
 import { DrawEntity } from "../../domain/entities";
 import { CustomError } from "../../domain/errors";
 
@@ -43,7 +44,7 @@ export class DrawMapper {
     if (!status) {
       throw CustomError.badRequest("Falta status");
     }
-    if (!available) {
+    if (!Validators.isBoolean(available)) {
       throw CustomError.badRequest("Falta available");
     }
     if (!numberOfWinners) {
