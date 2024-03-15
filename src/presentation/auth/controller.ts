@@ -1,15 +1,14 @@
 import type { Request, Response } from "express";
-import { OAuthProvider } from "../../config";
-import {
-  AuthUserFromDiscordDto,
-  LoginUserAdminDto,
-  RegisterUserAdminDto,
-} from "../../domain/dtos";
+import { AuthUserFromDiscordDto, LoginUserAdminDto } from "../../domain/dtos";
 import { AuthRepositoryInterface } from "../../domain/repositories";
 import { ResponseError } from "../custom-errors";
 import { JwtAdapter, TokenPayload } from "../../config/jwt.adapter";
 import { CustomError } from "../../domain/errors";
-import { DiscordUserResponse, TokenResponse } from "../../config/oauth.adapter";
+import type {
+  DiscordOAuthProvider,
+  DiscordUserResponse,
+  TokenResponse,
+} from "../../config/oauth";
 import { UserType } from "../../domain/entities";
 
 export class AuthController {
@@ -17,7 +16,7 @@ export class AuthController {
 
   constructor(
     private readonly authRepository: AuthRepositoryInterface,
-    private readonly OAuth: OAuthProvider,
+    private readonly OAuth: DiscordOAuthProvider,
   ) {}
 
   loginUser = async (req: Request, res: Response) => {

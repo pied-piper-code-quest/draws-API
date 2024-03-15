@@ -1,17 +1,22 @@
 import type { Request, Response } from "express";
+import type { DiscordOAuthProvider } from "../../config/oauth";
 import { DrawsRepositoryInterface } from "../../domain/repositories";
-import { ResponseError } from "../custom-errors";
 import {
   CreateDrawDto,
   FindWithPaginationDto,
   FinishDrawDtoDto,
   UpdateDrawDto,
 } from "../../domain/dtos";
+import { ResponseError } from "../custom-errors";
+import { CustomError } from "../../domain/errors";
 
 export class DrawsController {
   private handleError = ResponseError;
 
-  constructor(private readonly drawsRepository: DrawsRepositoryInterface) {}
+  constructor(
+    private readonly drawsRepository: DrawsRepositoryInterface,
+    private readonly OAuth: DiscordOAuthProvider,
+  ) {}
 
   getDraws = async (req: Request, res: Response) => {
     const [error, findWithPaginationDto] = FindWithPaginationDto.create(
@@ -90,6 +95,20 @@ export class DrawsController {
     const { id } = req.params;
     // @ts-ignore
     const discordUserId = req.discordUser!._id;
+    // @ts-ignore
+    const discordUserAccessToken = req.discordUser!.access_token;
+
+    const checkGuildMemberResponse = await this.OAuth.checkIfUserExistInServer(
+      `Bearer ${discordUserAccessToken}`,
+    );
+    if (checkGuildMemberResponse.status === 401) {
+      throw CustomError.internalServer("El usuario no tiene access_token");
+    }
+    if (checkGuildMemberResponse.status !== 200) {
+      throw CustomError.unauthorized(
+        "El usuario no está en el servidor de discord de DevTalles.",
+      );
+    }
 
     try {
       const draw = await this.drawsRepository.subscribeToDraw(

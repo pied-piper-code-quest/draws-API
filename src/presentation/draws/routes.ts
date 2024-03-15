@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { OAuthAdapter } from "../../config";
 import { UserType } from "../../domain/entities";
 import { DrawsDatasource, DrawsRepository } from "../../infrastructure";
 import { DrawsController } from "./controller";
@@ -11,7 +12,10 @@ export class DrawRoutes {
     const datasource = new DrawsDatasource();
     const drawsRepository = new DrawsRepository(datasource);
 
-    const controller = new DrawsController(drawsRepository);
+    const controller = new DrawsController(
+      drawsRepository,
+      OAuthAdapter.Discord,
+    );
 
     router.get("/", authMiddleware.ValidateUser(), controller.getDraws);
     router.get("/:id", authMiddleware.ValidateUser(), controller.getDrawById);
