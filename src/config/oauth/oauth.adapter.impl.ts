@@ -26,7 +26,7 @@ class DiscordProvider implements DiscordOAuthProvider {
       authUrl: "https://discord.com/oauth2/authorize",
       tokenUrl: "https://discord.com/api/oauth2/token",
       userUrl: "https://discord.com/api/users/@me",
-      checkGuildMemberUrl: `https://discord.com/api/users/@me/guilds/${envs.DISCORD_CLIENT_ID}/member`,
+      checkGuildMemberUrl: `https://discord.com/api/users/@me/guilds/${envs.DISCORD_SERVER_ID}/member`,
       redirectUrl: envs.REDIRECT_URL,
       clientUrl: envs.CLIENT_URL,
       tokenSecret: envs.JWT_SECRET_KEY,
