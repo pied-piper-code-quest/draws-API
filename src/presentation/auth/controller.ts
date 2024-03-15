@@ -46,7 +46,7 @@ export class AuthController {
     if (!code)
       return res
         .status(400)
-        .json({ message: "Authorization code must be provided" });
+        .json({ message: "Se debe proveer el código de autorización" });
     try {
       const tokenProps = this.OAuth.tokenProps(code);
 
@@ -60,7 +60,7 @@ export class AuthController {
         body: tokenProps.params,
       });
       if (request.status !== 200) {
-        throw CustomError.unauthorized("Unauthorized");
+        throw CustomError.unauthorized("No autorizado");
       }
       const { access_token, token_type }: TokenResponse = await request.json();
 
@@ -72,7 +72,7 @@ export class AuthController {
         },
       });
       if (requestUser.status !== 200) {
-        throw CustomError.internalServer("User not found in discord");
+        throw CustomError.internalServer("Usuario no encontrado en Discord");
       }
       const responseUser: DiscordUserResponse = await requestUser.json();
 
@@ -82,7 +82,7 @@ export class AuthController {
       });
       if (error !== null)
         throw CustomError.internalServer(
-          "Bad format in authUserFromDiscordDto",
+          "Mal formato en authUserFromDiscordDto",
         );
       const discordUser = await this.authRepository.authFromDiscord(
         authUserFromDiscordDto,
@@ -97,7 +97,7 @@ export class AuthController {
       });
     } catch (err: any) {
       console.error("Error: ", err);
-      res.status(401).json({ message: "Unauthorized" });
+      res.status(401).json({ message: "No autorizado" });
     }
   };
 

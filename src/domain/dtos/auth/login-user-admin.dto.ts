@@ -9,9 +9,9 @@ export class LoginUserAdminDto {
   static create(props: Record<string, any>): DtoResponse<LoginUserAdminDto> {
     const { username, password } = props;
     const errors: string[] = [];
-    if (!username) errors.push("username is required");
+    if (!username) errors.push("username es requerido");
 
-    if (!password) errors.push("password is required");
+    if (!password) errors.push("password es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];

@@ -3,11 +3,15 @@ import { AuthDatasourceInterface } from "../../domain/datasources/";
 import { DiscordUserEntity, UserAdminEntity } from "../../domain/entities";
 import { AuthUserFromDiscordDto, LoginUserAdminDto } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors";
-import type { CompareFunction } from "../interfaces";
+import { type NeverReturn, handleDBError } from "../handle-errors";
 import { DiscordUserMapper, UserAdminMapper } from "../mappers";
+import type { CompareFunction } from "../interfaces";
 
 export class AuthDatasource implements AuthDatasourceInterface {
   constructor(private readonly comparePassword: CompareFunction) {}
+
+  private handleError: NeverReturn = handleDBError;
+
   authFromDiscord = async (
     authUserFromDiscordDto: AuthUserFromDiscordDto,
   ): Promise<DiscordUserEntity> => {
@@ -34,11 +38,11 @@ export class AuthDatasource implements AuthDatasourceInterface {
     try {
       const findUser = await UserAdminModel.findOne({ username });
       if (!findUser) {
-        throw CustomError.badRequest("Invalid Credentials");
+        throw CustomError.badRequest("Credenciales inválidas");
       }
       const passwordMatch = this.comparePassword(password, findUser.password);
       if (!passwordMatch) {
-        throw CustomError.badRequest("Invalid Credentials");
+        throw CustomError.badRequest("Credenciales inválidas");
       }
 
       return UserAdminMapper.UserAdminEntityFromObject(findUser);
@@ -46,11 +50,4 @@ export class AuthDatasource implements AuthDatasourceInterface {
       this.handleError(error);
     }
   };
-
-  private handleError(error: any): never {
-    if (error instanceof CustomError) {
-      throw error;
-    }
-    throw CustomError.internalServer(error);
-  }
 }

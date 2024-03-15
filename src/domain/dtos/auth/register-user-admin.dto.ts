@@ -13,11 +13,11 @@ export class RegisterUserAdminDto {
 
     const errors: string[] = [];
 
-    if (!username) errors.push("username is required");
-    if (!email) errors.push("email is required");
-    if (!Validators.isEmail(email)) errors.push("Invalid email");
+    if (!username) errors.push("username es requerido");
+    if (!email) errors.push("email es requerido");
+    if (!Validators.isEmail(email)) errors.push("Correo inválido");
 
-    if (!password) errors.push("password is required");
+    if (!password) errors.push("password es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];

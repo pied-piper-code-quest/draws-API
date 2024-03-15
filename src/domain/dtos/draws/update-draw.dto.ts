@@ -27,32 +27,30 @@ export class UpdateDrawDto {
       manual,
     } = props;
     const errors: string[] = [];
-    if (!props) errors.push("Invalid Data");
 
-    if (!title) errors.push("title is required");
-    if (!description) errors.push("description is required");
+    if (!title) errors.push("title es requerido");
+    if (!description) errors.push("description es requerido");
 
     if (maxParticipants && maxParticipants < 1)
-      errors.push(
-        "maxParticipants should be null or an integer positive number",
-      );
+      errors.push("maxParticipants debe ser null o un entero positivo");
     if (!Validators.isNumber(numberOfWinners))
-      errors.push("numberOfWinners should be a number");
+      errors.push("numberOfWinners debe ser un número");
 
-    if (!prizes) errors.push("prizes is required");
-    if (prizes.length === 0) errors.push("Is required at least 1 prize");
+    if (!prizes) errors.push("prizes es requerido");
+    if (prizes.length === 0)
+      errors.push("Se debe asignar al menos 1 premio - prizes");
 
     if (numberOfWinners !== prizes.length)
       errors.push(
-        "The amount of prizes should be the same as number of winners",
+        "La cantidad de premios debe ser igual al número de ganadores - prizes | numberOfWinners",
       );
     if (alternativeWinners && alternativeWinners < 0)
-      errors.push("alternativeWinners should be equals or greater than 0");
+      errors.push("alternativeWinners debe ser mayor o igual a 0");
     if (resultDate && !Validators.isDate(resultDate))
-      errors.push("Invalid resultDate");
+      errors.push("Fecha de resultado inválida - resultDate");
     if (maxDateToJoin && !Validators.isDate(maxDateToJoin))
-      errors.push("Invalid maxDateToJoin");
-    if (!Validators.isBoolean(manual)) errors.push("manual is required");
+      errors.push("Fecha máxima para unirse inválida - maxDateToJoin");
+    if (!Validators.isBoolean(manual)) errors.push("manual es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];

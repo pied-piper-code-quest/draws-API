@@ -19,34 +19,34 @@ export class DiscordUserMapper {
       updatedAt,
     } = props;
     if (!id && !_id) {
-      throw CustomError.badRequest("Missing id");
+      throw CustomError.badRequest("Falta id");
     }
     if (!discordId) {
-      throw CustomError.badRequest("Missing discordId");
+      throw CustomError.badRequest("Falta discordId");
     }
     if (!username) {
-      throw CustomError.badRequest("Missing username");
+      throw CustomError.badRequest("Falta username");
     }
     if (!avatar) {
-      throw CustomError.badRequest("Missing avatar");
+      throw CustomError.badRequest("Falta avatar");
     }
     if (!discriminator) {
-      throw CustomError.badRequest("Missing discriminator");
+      throw CustomError.badRequest("Falta discriminator");
     }
     if (!globalName) {
-      throw CustomError.badRequest("Missing globalName");
+      throw CustomError.badRequest("Falta globalName");
     }
     if (!email) {
-      throw CustomError.badRequest("Missing email");
+      throw CustomError.badRequest("Falta email");
     }
     if (!verified) {
-      throw CustomError.badRequest("Missing verified");
+      throw CustomError.badRequest("Falta verified");
     }
     if (!createdAt) {
-      throw CustomError.badRequest("Missing createdAt");
+      throw CustomError.badRequest("Falta createdAt");
     }
     if (!updatedAt) {
-      throw CustomError.badRequest("Missing updatedAt");
+      throw CustomError.badRequest("Falta updatedAt");
     }
     return new DiscordUserEntity(
       id || _id,
