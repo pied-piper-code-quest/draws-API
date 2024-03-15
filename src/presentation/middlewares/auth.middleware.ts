@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { JwtAdapter, type TokenPayload } from "../../config/jwt.adapter";
 import { DiscordUserModel, UserAdminModel } from "../../data/mongo-db";
 import { CustomError } from "../../domain/errors";
-import { ResponseError } from "../custom-errors";
 import { UserType } from "../../domain/entities";
+import { ResponseError } from "../custom-errors";
 
 class AuthMiddleware {
   private readonly handleError = ResponseError;
@@ -40,9 +40,6 @@ class AuthMiddleware {
       if (!user.isActive) {
         throw CustomError.unauthorized("Unauthorized");
       }
-      // if (roles && roles.length > 0 && !roles.includes(user.role)) {
-      //   return res.status(401).json({ message: "Unauthorized" });
-      // }
 
       // @ts-ignore
       req.userAdmin = user;
