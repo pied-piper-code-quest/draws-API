@@ -28,11 +28,14 @@ export enum DrawStatus {
 }
 // export interface DrawBase {
 export interface DrawInterface {
+  title: string;
+  description: string;
   createdBy: string | UserAdminInterface;
   status: DrawStatus;
   available: boolean;
   maxParticipants: number | null;
   numberOfWinners: number;
+  alternativeWinners: number;
   prizes: string[];
   resultDate: string | null;
   maxDateToJoin: string | null;

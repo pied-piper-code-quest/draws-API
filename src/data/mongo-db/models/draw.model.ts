@@ -3,6 +3,14 @@ import { DrawInterface, DrawStatus } from "../interfaces";
 
 const drawSchema = new Schema<DrawInterface>(
   {
+    title: {
+      type: Schema.Types.String,
+      required: true,
+    },
+    description: {
+      type: Schema.Types.String,
+      required: true,
+    },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User-Admin",
@@ -26,6 +34,10 @@ const drawSchema = new Schema<DrawInterface>(
       type: Schema.Types.Number,
       default: 1,
       min: 1,
+    },
+    alternativeWinners: {
+      type: Schema.Types.Number,
+      default: 0,
     },
     prizes: [
       {
