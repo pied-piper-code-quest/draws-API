@@ -13,7 +13,6 @@ export class AuthRoutes {
       BcryptAdapter.compare,
     );
     const authRepository = new AuthRepository(datasource);
-    // const OAuthAdapter = "";
 
     const controller = new AuthController(authRepository, OAuthAdapter.Discord);
 
