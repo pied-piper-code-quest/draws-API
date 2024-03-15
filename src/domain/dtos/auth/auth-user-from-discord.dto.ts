@@ -3,6 +3,7 @@ import { DtoResponse } from "../../interfaces";
 
 export class AuthUserFromDiscordDto {
   private constructor(
+    public access_token: string,
     public discordId: string,
     public username: string,
     public avatar: string,
@@ -16,6 +17,7 @@ export class AuthUserFromDiscordDto {
     props: Record<string, any>,
   ): DtoResponse<AuthUserFromDiscordDto> {
     const {
+      access_token,
       id,
       username,
       avatar,
@@ -35,13 +37,14 @@ export class AuthUserFromDiscordDto {
     } = props;
     const errors: string[] = [];
 
-    if (!id) errors.push("id is required");
-    if (!username) errors.push("username is required");
-    if (!avatar) errors.push("avatar is required");
-    if (!discriminator) errors.push("discriminator is required");
-    if (!global_name) errors.push("global_name is required");
-    if (!email) errors.push("email is required");
-    if (!verified) errors.push("verified is required");
+    if (!access_token) errors.push("access_token es requerido");
+    if (!id) errors.push("id es requerido");
+    if (!username) errors.push("username es requerido");
+    if (!avatar) errors.push("avatar es requerido");
+    if (!discriminator) errors.push("discriminator es requerido");
+    if (!global_name) errors.push("global_name es requerido");
+    if (!email) errors.push("email es requerido");
+    if (!verified) errors.push("verified es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];
@@ -50,6 +53,7 @@ export class AuthUserFromDiscordDto {
     return [
       null,
       new AuthUserFromDiscordDto(
+        access_token,
         id,
         username,
         avatar,

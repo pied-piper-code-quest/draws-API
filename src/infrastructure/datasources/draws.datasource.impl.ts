@@ -10,23 +10,24 @@ import type {
 import { CustomError } from "../../domain/errors";
 import type { DrawEntity } from "../../domain/entities";
 import type { ResponseWithPagination } from "../../domain/interfaces";
+import { type NeverReturn, handleDBError } from "../handle-errors";
 import { DrawMapper } from "../mappers";
 import { FindModelWithPagination } from "../utils";
 
 export class DrawsDatasource implements DrawsDatasourceInterface {
+  private handleError: NeverReturn = handleDBError;
+
   private findOneById = async (id: string) => {
-    const draw = await DrawModel.findById(id);
-    if (!draw) {
-      throw CustomError.notFound("Draw not found");
+    try {
+      const draw = await DrawModel.findById(id);
+      if (!draw) {
+        throw CustomError.notFound("Sorteo no encontrado");
+      }
+      return draw;
+    } catch (error) {
+      this.handleError(error);
     }
-    return draw;
   };
-  private handleError(error: any): never {
-    if (error instanceof CustomError) {
-      throw error;
-    }
-    throw CustomError.internalServer(error);
-  }
 
   find = async (
     findWithPaginationDto: FindWithPaginationDto,
@@ -105,7 +106,7 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
     );
     if (errorInWinners)
       throw CustomError.badRequest(
-        "There is at least 1 winner who does not participate in the draw.",
+        "Al menos 1 de los ganadores seleccionados no participa en el sorteo",
       );
     draw.available = false;
     draw.status = DrawStatus.finished;
@@ -118,13 +119,12 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
     drawId: string,
     discordId: string,
   ): Promise<DrawEntity> => {
-    // TODO: Implementar lógica para verificar que el usuario existe en BBDD
-    // TODO: Implementar lógica para validar que el usuario está en la comunidad de discord
-
     const draw = await this.findOneById(drawId);
     const drawParticipants = draw.participants as string[];
     if (drawParticipants.includes(discordId))
-      throw CustomError.badRequest("User already subscribed");
+      throw CustomError.badRequest(
+        "El usuario ya está inscrito en este sorteo",
+      );
 
     drawParticipants.push(discordId);
     draw.participants = drawParticipants;

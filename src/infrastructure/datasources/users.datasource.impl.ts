@@ -7,25 +7,40 @@ import type {
 import type { UserAdminEntity, DiscordUserEntity } from "../../domain/entities";
 import { CustomError } from "../../domain/errors";
 import type { ResponseWithPagination } from "../../domain/interfaces";
-import type { HashFunction } from "../interfaces";
+import { type NeverReturn, handleDBError } from "../handle-errors";
 import { DiscordUserMapper, UserAdminMapper } from "../mappers";
 import { FindModelWithPagination } from "../utils";
+import type { HashFunction } from "../interfaces";
 
 export class UsersDatasource implements UsersDatasourceInterface {
   constructor(private readonly hashPassword: HashFunction) {}
+
+  private handleError: NeverReturn = handleDBError;
+
   private findUserAdminById = async (id: string) => {
-    const userAdmin = await UserAdminModel.findOne({ _id: id, isActive: true });
-    if (!userAdmin) {
-      throw CustomError.notFound("Admin not found");
+    try {
+      const userAdmin = await UserAdminModel.findOne({
+        _id: id,
+        isActive: true,
+      });
+      if (!userAdmin) {
+        throw CustomError.notFound("Administrador no encontrado");
+      }
+      return userAdmin;
+    } catch (error) {
+      this.handleError(error);
     }
-    return userAdmin;
   };
   private findDiscordUserById = async (id: string) => {
-    const discordUser = await DiscordUserModel.findById(id);
-    if (!discordUser) {
-      throw CustomError.notFound("Discord user not found");
+    try {
+      const discordUser = await DiscordUserModel.findById(id);
+      if (!discordUser) {
+        throw CustomError.notFound("Discord user not found");
+      }
+      return discordUser;
+    } catch (error) {
+      this.handleError(error);
     }
-    return discordUser;
   };
   seedUserAdmins = async (): Promise<UserAdminEntity> => {
     const findUserAdmins = await UserAdminModel.countDocuments();
@@ -53,7 +68,7 @@ export class UsersDatasource implements UsersDatasourceInterface {
         username,
       });
       if (findUser) {
-        throw CustomError.badRequest("username already exist");
+        throw CustomError.badRequest("El nombre de usuario ya existe");
         // throw CustomError.badRequest("Invalid Credentials");
       }
 
@@ -123,11 +138,4 @@ export class UsersDatasource implements UsersDatasourceInterface {
     const discordUser = await this.findDiscordUserById(id);
     return DiscordUserMapper.DiscordUserEntityFromObject(discordUser);
   };
-
-  private handleError(error: any): never {
-    if (error instanceof CustomError) {
-      throw error;
-    }
-    throw CustomError.internalServer(error);
-  }
 }

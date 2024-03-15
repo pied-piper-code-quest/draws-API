@@ -8,22 +8,22 @@ export class UserAdminMapper {
     const { id, _id, username, email, isActive, createdAt, updatedAt } = props;
 
     if (!id && !_id) {
-      throw CustomError.badRequest("Missing id");
+      throw CustomError.badRequest("Falta id");
     }
     if (!username) {
-      throw CustomError.badRequest("Missing username");
+      throw CustomError.badRequest("Falta username");
     }
     if (!email) {
-      throw CustomError.badRequest("Missing email");
+      throw CustomError.badRequest("Falta email");
     }
     if (!createdAt) {
-      throw CustomError.badRequest("Missing createdAt");
+      throw CustomError.badRequest("Falta createdAt");
     }
     if (!updatedAt) {
-      throw CustomError.badRequest("Missing updatedAt");
+      throw CustomError.badRequest("Falta updatedAt");
     }
     // if (!password) {
-    //   throw CustomError.badRequest("Missing password");
+    //   throw CustomError.badRequest("Falta password");
     // }
     return new UserAdminEntity(
       id || _id,

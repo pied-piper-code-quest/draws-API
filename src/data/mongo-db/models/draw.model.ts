@@ -5,16 +5,16 @@ const drawSchema = new Schema<DrawInterface>(
   {
     title: {
       type: Schema.Types.String,
-      required: true,
+      required: [true, "El título es requerido"],
     },
     description: {
       type: Schema.Types.String,
-      required: true,
+      required: [true, "La descripción es requerida"],
     },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User-Admin",
-      required: true,
+      required: [true, "El createdBy es requerido"],
     },
     status: {
       type: Schema.Types.String,

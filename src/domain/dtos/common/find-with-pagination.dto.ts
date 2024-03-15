@@ -15,8 +15,9 @@ export class FindWithPaginationDto {
     const { startDate, endDate, limit, page } = props;
     const errors: string[] = [];
     if (startDate && !Validators.isDate(startDate))
-      errors.push("Invalid startDate");
-    if (endDate && !Validators.isDate(endDate)) errors.push("Invalid endDate");
+      errors.push("Fecha de inicio inválida - startDate");
+    if (endDate && !Validators.isDate(endDate))
+      errors.push("Fecha de fin inválida - endDate");
     // if (page && page < 1) errors.push("Invalid page");
 
     if (errors.length > 0) {

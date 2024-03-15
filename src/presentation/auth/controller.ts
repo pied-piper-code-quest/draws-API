@@ -1,15 +1,14 @@
 import type { Request, Response } from "express";
-import { OAuthProvider } from "../../config";
-import {
-  AuthUserFromDiscordDto,
-  LoginUserAdminDto,
-  RegisterUserAdminDto,
-} from "../../domain/dtos";
+import { AuthUserFromDiscordDto, LoginUserAdminDto } from "../../domain/dtos";
 import { AuthRepositoryInterface } from "../../domain/repositories";
 import { ResponseError } from "../custom-errors";
 import { JwtAdapter, TokenPayload } from "../../config/jwt.adapter";
 import { CustomError } from "../../domain/errors";
-import { DiscordUserResponse, TokenResponse } from "../../config/oauth.adapter";
+import type {
+  DiscordOAuthProvider,
+  DiscordUserResponse,
+  TokenResponse,
+} from "../../config/oauth";
 import { UserType } from "../../domain/entities";
 
 export class AuthController {
@@ -17,7 +16,7 @@ export class AuthController {
 
   constructor(
     private readonly authRepository: AuthRepositoryInterface,
-    private readonly OAuth: OAuthProvider,
+    private readonly OAuth: DiscordOAuthProvider,
   ) {}
 
   loginUser = async (req: Request, res: Response) => {
@@ -47,10 +46,11 @@ export class AuthController {
     if (!code)
       return res
         .status(400)
-        .json({ message: "Authorization code must be provided" });
+        .json({ message: "Se debe proveer el código de autorización" });
     try {
       const tokenProps = this.OAuth.tokenProps(code);
 
+      // Verificar si el usuario existe en discord
       const request = await fetch(`${this.OAuth.config.tokenUrl}`, {
         method: "POST",
         headers: {
@@ -59,13 +59,12 @@ export class AuthController {
         },
         body: tokenProps.params,
       });
-      console.log("status: ", request.status);
       if (request.status !== 200) {
-        throw CustomError.unauthorized("Unauthorized");
+        throw CustomError.unauthorized("No autorizado");
       }
       const { access_token, token_type }: TokenResponse = await request.json();
-      // Get user info from id token
 
+      // Obtener datos del usuario por medio de su token
       const requestUser = await fetch(this.OAuth.config.userUrl, {
         method: "GET",
         headers: {
@@ -73,15 +72,17 @@ export class AuthController {
         },
       });
       if (requestUser.status !== 200) {
-        throw CustomError.internalServer("User not found in discord");
+        throw CustomError.internalServer("Usuario no encontrado en Discord");
       }
       const responseUser: DiscordUserResponse = await requestUser.json();
 
-      const [error, authUserFromDiscordDto] =
-        AuthUserFromDiscordDto.create(responseUser);
+      const [error, authUserFromDiscordDto] = AuthUserFromDiscordDto.create({
+        ...responseUser,
+        access_token,
+      });
       if (error !== null)
         throw CustomError.internalServer(
-          "Bad format in authUserFromDiscordDto",
+          "Mal formato en authUserFromDiscordDto",
         );
       const discordUser = await this.authRepository.authFromDiscord(
         authUserFromDiscordDto,
@@ -96,7 +97,7 @@ export class AuthController {
       });
     } catch (err: any) {
       console.error("Error: ", err);
-      res.status(401).json({ message: "Unauthorized" });
+      res.status(401).json({ message: "No autorizado" });
     }
   };
 

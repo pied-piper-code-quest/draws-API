@@ -14,15 +14,15 @@ class AuthMiddleware {
   private ValidateJWT = async (req: Request, res: Response) => {
     const authorization = req.header("Authorization");
     if (!authorization)
-      throw CustomError.unauthorized("Unable to authenticate");
+      throw CustomError.unauthorized("No se ha podido autenticar");
     if (!authorization.startsWith("Bearer "))
-      throw CustomError.unauthorized("Invalid Bearer token");
+      throw CustomError.unauthorized("Bearer token inválido");
 
     const token = authorization.split(" ").at(1) || "";
 
     const payload = await JwtAdapter.verifyToken(token);
     if (!payload) {
-      throw CustomError.unauthorized("Invalid token");
+      throw CustomError.unauthorized("Token inválido");
     }
     return payload;
   };
@@ -38,7 +38,7 @@ class AuthMiddleware {
         throw this.JWTError;
       }
       if (!user.isActive) {
-        throw CustomError.unauthorized("Unauthorized");
+        throw CustomError.unauthorized("No autorizado");
       }
 
       // @ts-ignore
@@ -82,7 +82,7 @@ class AuthMiddleware {
           userTypes.length > 0 &&
           !userTypes.includes(payload.userType)
         ) {
-          throw CustomError.unauthorized("Unauthorized");
+          throw CustomError.unauthorized("No autorizado");
         }
         if (payload.userType === UserType.admin) {
           return this.ValidateUserAdmin(req, res, next, payload);

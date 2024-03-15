@@ -5,16 +5,16 @@ const userAdminSchema = new Schema<UserAdminInterface>(
   {
     username: {
       type: Schema.Types.String,
-      required: [true, "Username is required"],
+      required: [true, "El nombre de usuario es requerido"],
       unique: true,
     },
     email: {
       type: Schema.Types.String,
-      required: [true, "Email is required"],
+      required: [true, "El correo es requerido"],
     },
     password: {
       type: Schema.Types.String,
-      required: [true, "Password is required"],
+      required: [true, "La contraseña es requerida"],
     },
     isActive: {
       type: Schema.Types.Boolean,

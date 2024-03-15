@@ -1,3 +1,4 @@
+import { Validators } from "../../config";
 import { DrawEntity } from "../../domain/entities";
 import { CustomError } from "../../domain/errors";
 
@@ -32,37 +33,37 @@ export class DrawMapper {
     } = props;
 
     if (!id && !_id) {
-      throw CustomError.badRequest("Missing id");
+      throw CustomError.badRequest("Falta id");
     }
     if (!title) {
-      throw CustomError.badRequest("Missing title");
+      throw CustomError.badRequest("Falta title");
     }
     if (!description) {
-      throw CustomError.badRequest("Missing description");
+      throw CustomError.badRequest("Falta description");
     }
     if (!status) {
-      throw CustomError.badRequest("Missing status");
+      throw CustomError.badRequest("Falta status");
     }
-    if (!available) {
-      throw CustomError.badRequest("Missing available");
+    if (!Validators.isBoolean(available)) {
+      throw CustomError.badRequest("Falta available");
     }
     if (!numberOfWinners) {
-      throw CustomError.badRequest("Missing numberOfWinners");
+      throw CustomError.badRequest("Falta numberOfWinners");
     }
     if (!prizes) {
-      throw CustomError.badRequest("Missing prizes");
+      throw CustomError.badRequest("Falta prizes");
     }
     if (!participants) {
-      throw CustomError.badRequest("Missing participants");
+      throw CustomError.badRequest("Falta participants");
     }
     if (!winners) {
-      throw CustomError.badRequest("Missing winners");
+      throw CustomError.badRequest("Falta winners");
     }
     if (!createdAt) {
-      throw CustomError.badRequest("Missing createdAt");
+      throw CustomError.badRequest("Falta createdAt");
     }
     if (!updatedAt) {
-      throw CustomError.badRequest("Missing updatedAt");
+      throw CustomError.badRequest("Falta updatedAt");
     }
     return new DrawEntity(
       id || _id,
