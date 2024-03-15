@@ -8,16 +8,10 @@ export class AuthRoutes {
   static get routes(): Router {
     const router = Router();
 
-    const datasource = new AuthDatasource(
-      BcryptAdapter.hash,
-      BcryptAdapter.compare,
-    );
+    const datasource = new AuthDatasource(BcryptAdapter.compare);
     const authRepository = new AuthRepository(datasource);
-    // const OAuthAdapter = "";
 
     const controller = new AuthController(authRepository, OAuthAdapter.Discord);
-
-    router.post("/register", controller.registerUser);
 
     router.post("/login", controller.loginUser);
 

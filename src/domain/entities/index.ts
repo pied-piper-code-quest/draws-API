@@ -5,3 +5,4 @@ export enum UserType {
 
 export { UserAdminEntity } from "./user-admin.entity";
 export { DiscordUserEntity } from "./discord-user.entity";
+export { DrawEntity } from "./draw.entity";

@@ -1,16 +1,6 @@
 import { DiscordUserEntity } from "../../domain/entities";
 import { CustomError } from "../../domain/errors";
 
-interface foo {
-  discordId: string;
-  username: string;
-  avatar: string;
-  discriminator: string;
-  globalName: string;
-  email: string;
-  verified: boolean;
-}
-
 export class DiscordUserMapper {
   static DiscordUserEntityFromObject(
     props: Record<string, any>,
@@ -28,7 +18,6 @@ export class DiscordUserMapper {
       createdAt,
       updatedAt,
     } = props;
-
     if (!id && !_id) {
       throw CustomError.badRequest("Missing id");
     }
