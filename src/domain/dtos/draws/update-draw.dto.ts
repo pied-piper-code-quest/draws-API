@@ -1,11 +1,10 @@
 import { Validators } from "../../../config";
 import type { DtoResponse } from "../../interfaces";
 
-export class CreateDrawDto {
+export class UpdateDrawDto {
   private constructor(
     public title: string,
     public description: string,
-    public createdBy: string,
     public maxParticipants: number | null,
     public numberOfWinners: number,
     public alternativeWinners: number,
@@ -15,11 +14,10 @@ export class CreateDrawDto {
     public manual: boolean,
   ) {}
 
-  static create(props: Record<string, any>): DtoResponse<CreateDrawDto> {
+  static create(props: Record<string, any>): DtoResponse<UpdateDrawDto> {
     const {
       title,
       description,
-      createdBy,
       maxParticipants,
       numberOfWinners,
       alternativeWinners,
@@ -29,19 +27,21 @@ export class CreateDrawDto {
       manual,
     } = props;
     const errors: string[] = [];
+    if (!props) errors.push("Invalid Data");
 
     if (!title) errors.push("title is required");
     if (!description) errors.push("description is required");
-    if (!createdBy) errors.push("createdBy Id is required");
+
     if (maxParticipants && maxParticipants < 1)
       errors.push(
         "maxParticipants should be null or an integer positive number",
       );
-    if (!numberOfWinners) errors.push("numberOfWinners is required");
     if (!Validators.isNumber(numberOfWinners))
       errors.push("numberOfWinners should be a number");
+
     if (!prizes) errors.push("prizes is required");
     if (prizes.length === 0) errors.push("Is required at least 1 prize");
+
     if (numberOfWinners !== prizes.length)
       errors.push(
         "The amount of prizes should be the same as number of winners",
@@ -60,10 +60,9 @@ export class CreateDrawDto {
     }
     return [
       null,
-      new CreateDrawDto(
+      new UpdateDrawDto(
         title,
         description,
-        createdBy,
         maxParticipants || null,
         numberOfWinners,
         alternativeWinners || 0,
