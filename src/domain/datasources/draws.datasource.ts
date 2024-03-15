@@ -1,6 +1,5 @@
 import {
   CreateDrawDto,
-  FindByIdDto,
   FindWithPaginationDto,
   FinishDrawDtoDto,
   UpdateDrawDto,
@@ -13,7 +12,7 @@ export abstract class DrawsDatasourceInterface {
     findWithPaginationDto: FindWithPaginationDto,
   ): Promise<ResponseWithPagination<DrawEntity>>;
 
-  abstract findOne(findByIdDto: FindByIdDto): Promise<DrawEntity>;
+  abstract findOne(id: string): Promise<DrawEntity>;
 
   abstract createDraw(createDrawDto: CreateDrawDto): Promise<DrawEntity>;
 
@@ -22,7 +21,7 @@ export abstract class DrawsDatasourceInterface {
     updateDrawDto: UpdateDrawDto,
   ): Promise<DrawEntity>;
 
-  abstract cancelDraw(findByIdDto: FindByIdDto): Promise<DrawEntity>;
+  abstract cancelDraw(id: string): Promise<DrawEntity>;
 
   abstract finishDraw(
     id: string,

@@ -3,7 +3,6 @@ import { type DrawInterface, DrawModel, DrawStatus } from "../../data/mongo-db";
 import { DrawsDatasourceInterface } from "../../domain/datasources";
 import type {
   CreateDrawDto,
-  FindByIdDto,
   FindWithPaginationDto,
   FinishDrawDtoDto,
   UpdateDrawDto,
@@ -12,6 +11,7 @@ import { CustomError } from "../../domain/errors";
 import type { DrawEntity } from "../../domain/entities";
 import type { ResponseWithPagination } from "../../domain/interfaces";
 import { DrawMapper } from "../mappers";
+import { FindModelWithPagination } from "../utils";
 
 export class DrawsDatasource implements DrawsDatasourceInterface {
   private findOneById = async (id: string) => {
@@ -32,6 +32,7 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
     findWithPaginationDto: FindWithPaginationDto,
   ): Promise<ResponseWithPagination<DrawEntity>> => {
     const { startDate, endDate, limit, page } = findWithPaginationDto;
+
     const query: FilterQuery<DrawInterface> = {};
     if (startDate) {
       query.createdAt ??= {};
@@ -41,20 +42,22 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
       query.createdAt ??= {};
       query.createdAt.$lte = new Date(endDate + " 23:59:59");
     }
-    const offset = (page - 1) * limit;
 
-    const totalDraws = await DrawModel.countDocuments(query);
-    const draws = await DrawModel.find(query).limit(limit).skip(offset);
-    const totalPages = Math.ceil(totalDraws / limit);
+    const { currentPage, data, totalPages } = await FindModelWithPagination({
+      model: DrawModel,
+      filter: query,
+      limit,
+      page,
+    });
+
     return {
-      // data: draws.map(element => DrawMapper.DrawEntityFromObject(element)),
-      data: draws.map(DrawMapper.DrawEntityFromObject),
+      // data: data.map(element => DrawMapper.DrawEntityFromObject(element)),
+      data: data.map(DrawMapper.DrawEntityFromObject),
       totalPages: totalPages,
-      currentPage: page,
+      currentPage: currentPage,
     };
   };
-  findOne = async (findByIdDto: FindByIdDto): Promise<DrawEntity> => {
-    const { id } = findByIdDto;
+  findOne = async (id: string): Promise<DrawEntity> => {
     const draw = await this.findOneById(id);
     return DrawMapper.DrawEntityFromObject(draw);
   };
@@ -78,8 +81,7 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
       this.handleError(error);
     }
   };
-  cancelDraw = async (findByIdDto: FindByIdDto): Promise<DrawEntity> => {
-    const { id } = findByIdDto;
+  cancelDraw = async (id: string): Promise<DrawEntity> => {
     const draw = await this.findOneById(id);
     draw.available = false;
     draw.status = DrawStatus.canceled;

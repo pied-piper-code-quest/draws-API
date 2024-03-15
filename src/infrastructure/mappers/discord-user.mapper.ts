@@ -18,7 +18,6 @@ export class DiscordUserMapper {
       createdAt,
       updatedAt,
     } = props;
-
     if (!id && !_id) {
       throw CustomError.badRequest("Missing id");
     }

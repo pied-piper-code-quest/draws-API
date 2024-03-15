@@ -38,7 +38,7 @@ export class DrawRoutes {
       controller.cancelDraw,
     );
     router.patch(
-      "/manage/:id",
+      "/finish/:id",
       authMiddleware.ValidateUser(UserType.admin),
       controller.finishDraw,
     );

@@ -6,6 +6,7 @@ const userAdminSchema = new Schema<UserAdminInterface>(
     username: {
       type: Schema.Types.String,
       required: [true, "Username is required"],
+      unique: true,
     },
     email: {
       type: Schema.Types.String,

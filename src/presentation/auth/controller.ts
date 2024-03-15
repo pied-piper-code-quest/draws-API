@@ -20,22 +20,6 @@ export class AuthController {
     private readonly OAuth: OAuthProvider,
   ) {}
 
-  registerUser = async (req: Request, res: Response) => {
-    const [error, registerUserAdminDto] = RegisterUserAdminDto.create(req.body);
-    if (error !== null) return res.status(400).json({ message: error });
-
-    try {
-      const user = await this.authRepository.register(registerUserAdminDto);
-      const token = await this.generateUserToken({
-        id: user.id,
-        userType: UserType.admin,
-      });
-      res.status(201).json({ user, token });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  };
-
   loginUser = async (req: Request, res: Response) => {
     const [error, loginUserAdminDto] = LoginUserAdminDto.create(req.body);
     if (error !== null) return res.status(400).json({ message: error });

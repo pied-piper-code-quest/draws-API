@@ -1,20 +1,13 @@
 import { DiscordUserModel, UserAdminModel } from "../../data/mongo-db";
 import { AuthDatasourceInterface } from "../../domain/datasources/";
 import { DiscordUserEntity, UserAdminEntity } from "../../domain/entities";
-import {
-  AuthUserFromDiscordDto,
-  LoginUserAdminDto,
-  RegisterUserAdminDto,
-} from "../../domain/dtos";
+import { AuthUserFromDiscordDto, LoginUserAdminDto } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors";
-import type { CompareFunction, HashFunction } from "../interfaces";
+import type { CompareFunction } from "../interfaces";
 import { DiscordUserMapper, UserAdminMapper } from "../mappers";
 
 export class AuthDatasource implements AuthDatasourceInterface {
-  constructor(
-    private readonly hashPassword: HashFunction,
-    private readonly comparePassword: CompareFunction,
-  ) {}
+  constructor(private readonly comparePassword: CompareFunction) {}
   authFromDiscord = async (
     authUserFromDiscordDto: AuthUserFromDiscordDto,
   ): Promise<DiscordUserEntity> => {
@@ -50,37 +43,6 @@ export class AuthDatasource implements AuthDatasourceInterface {
       }
 
       return UserAdminMapper.UserAdminEntityFromObject(findUser);
-    } catch (error) {
-      this.handleError(error);
-    }
-  };
-
-  register = async (
-    registerUserAdminDto: RegisterUserAdminDto,
-  ): Promise<UserAdminEntity> => {
-    const { name, lastName, phone, username, email, password } =
-      registerUserAdminDto;
-    try {
-      const findUser = await UserAdminModel.findOne({
-        $or: [{ username }, { email }],
-      });
-      if (findUser) {
-        // throw CustomError.badRequest("(Username | Email) already exist");
-        throw CustomError.badRequest("Invalid Credentials");
-      }
-
-      const user = await UserAdminModel.create({
-        name,
-        lastName,
-        phone,
-        username,
-        email,
-        password: this.hashPassword(password),
-      });
-
-      await user.save();
-
-      return UserAdminMapper.UserAdminEntityFromObject(user);
     } catch (error) {
       this.handleError(error);
     }

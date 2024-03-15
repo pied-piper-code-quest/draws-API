@@ -2,7 +2,6 @@ import { DrawsRepositoryInterface } from "../../domain/repositories";
 import type { DrawsDatasourceInterface } from "../../domain/datasources";
 import type {
   CreateDrawDto,
-  FindByIdDto,
   FindWithPaginationDto,
   FinishDrawDtoDto,
   UpdateDrawDto,
@@ -18,8 +17,8 @@ export class DrawsRepository implements DrawsRepositoryInterface {
   ): Promise<ResponseWithPagination<DrawEntity>> {
     return this.datasource.find(findWithPaginationDto);
   }
-  findOne(findByIdDto: FindByIdDto): Promise<DrawEntity> {
-    return this.datasource.findOne(findByIdDto);
+  findOne(id: string): Promise<DrawEntity> {
+    return this.datasource.findOne(id);
   }
   createDraw(createDrawDto: CreateDrawDto): Promise<DrawEntity> {
     return this.datasource.createDraw(createDrawDto);
@@ -27,8 +26,8 @@ export class DrawsRepository implements DrawsRepositoryInterface {
   updateDraw(id: string, updateDrawDto: UpdateDrawDto): Promise<DrawEntity> {
     return this.datasource.updateDraw(id, updateDrawDto);
   }
-  cancelDraw(findByIdDto: FindByIdDto): Promise<DrawEntity> {
-    return this.datasource.cancelDraw(findByIdDto);
+  cancelDraw(id: string): Promise<DrawEntity> {
+    return this.datasource.cancelDraw(id);
   }
   finishDraw(id: string, finishDrawDto: FinishDrawDtoDto): Promise<DrawEntity> {
     return this.datasource.finishDraw(id, finishDrawDto);

@@ -3,7 +3,6 @@ import { DrawsRepositoryInterface } from "../../domain/repositories";
 import { ResponseError } from "../custom-errors";
 import {
   CreateDrawDto,
-  FindByIdDto,
   FindWithPaginationDto,
   FinishDrawDtoDto,
   UpdateDrawDto,
@@ -30,19 +29,21 @@ export class DrawsController {
     }
   };
   getDrawById = async (req: Request, res: Response) => {
-    // const { id } = req.params;
-    const [error, findByIdDto] = FindByIdDto.create(req.params);
-    if (error !== null) return res.status(400).json({ message: error });
-
+    const { id } = req.params;
     try {
-      const draw = await this.drawsRepository.findOne(findByIdDto);
+      const draw = await this.drawsRepository.findOne(id);
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);
     }
   };
   createNewDraw = async (req: Request, res: Response) => {
-    const [error, createDrawDto] = CreateDrawDto.create(req.body);
+    // @ts-ignore
+    const userAdminId = req.userAdmin!._id;
+    const [error, createDrawDto] = CreateDrawDto.create({
+      ...req.body,
+      createdBy: userAdminId,
+    });
     if (error !== null) return res.status(400).json({ message: error });
 
     try {
@@ -65,12 +66,9 @@ export class DrawsController {
     }
   };
   cancelDraw = async (req: Request, res: Response) => {
-    // const { id } = req.params;
-    const [error, findByIdDto] = FindByIdDto.create(req.params);
-    if (error !== null) return res.status(400).json({ message: error });
-
+    const { id } = req.params;
     try {
-      const draw = await this.drawsRepository.cancelDraw(findByIdDto);
+      const draw = await this.drawsRepository.cancelDraw(id);
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);
@@ -91,10 +89,13 @@ export class DrawsController {
   subscribeToDraw = async (req: Request, res: Response) => {
     const { id } = req.params;
     // @ts-ignore
-    const discordId = req.discordUser!.discordId;
+    const discordUserId = req.discordUser!._id;
 
     try {
-      const draw = await this.drawsRepository.subscribeToDraw(id, discordId);
+      const draw = await this.drawsRepository.subscribeToDraw(
+        id,
+        discordUserId,
+      );
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);
