@@ -1,18 +1,36 @@
-import { CreateDrawDto } from "../dtos";
-import { DrawEntity } from "../entities";
+import {
+  CreateDrawDto,
+  FindByIdDto,
+  FindWithPaginationDto,
+  FinishDrawDtoDto,
+  UpdateDrawDto,
+} from "../dtos";
+import type { DrawEntity } from "../entities";
+import type { ResponseWithPagination } from "../interfaces";
 
 export abstract class DrawsDatasourceInterface {
+  abstract find(
+    findWithPaginationDto: FindWithPaginationDto,
+  ): Promise<ResponseWithPagination<DrawEntity>>;
+
+  abstract findOne(findByIdDto: FindByIdDto): Promise<DrawEntity>;
+
   abstract createDraw(createDrawDto: CreateDrawDto): Promise<DrawEntity>;
 
-  // abstract updateDraw(updateDrawDto: UpdateDrawDto): Promise<DrawEntity>;
+  abstract updateDraw(
+    id: string,
+    updateDrawDto: UpdateDrawDto,
+  ): Promise<DrawEntity>;
 
-  // abstract find(findDrawsDto: FindDrawsDto): Promise<DrawEntity[]>;
+  abstract cancelDraw(findByIdDto: FindByIdDto): Promise<DrawEntity>;
 
-  // abstract findOne(findOneDrawDto: FindOneDrawDto): Promise<DrawEntity>;
+  abstract finishDraw(
+    id: string,
+    finishDrawDto: FinishDrawDtoDto,
+  ): Promise<DrawEntity>;
 
-  // abstract cancelDraw(cancelDrawDto: CancelDrawDto): Promise<DrawEntity>;
-
-  // abstract finishDraw(finishDrawDto: FinishDrawDto): Promise<DrawEntity>;
-
-  // abstract subscribeToDraw(subscribeToDrawDto: SubscribeToDrawDto): Promise<DrawEntity>;
+  abstract subscribeToDraw(
+    drawId: string,
+    discordId: string,
+  ): Promise<DrawEntity>;
 }
