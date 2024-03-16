@@ -98,7 +98,7 @@ export class AuthController {
       });
     } catch (err: any) {
       console.error("Error: ", err);
-      res.status(401).json({ message: "No autorizado" });
+      res.status(401).json({ message: err.message ?? "No autorizado" });
     }
   };
 
