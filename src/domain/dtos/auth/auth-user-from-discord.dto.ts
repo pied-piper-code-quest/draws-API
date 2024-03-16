@@ -1,5 +1,6 @@
 import { DtoResponse } from "../../interfaces";
 // import type { DiscordUserResponse } from '../../../config/oauth.adapter';
+import { Validators } from "../../../config/validators";
 
 export class AuthUserFromDiscordDto {
   private constructor(
@@ -43,8 +44,8 @@ export class AuthUserFromDiscordDto {
     if (!avatar) errors.push("avatar es requerido");
     if (!discriminator) errors.push("discriminator es requerido");
     if (!global_name) errors.push("global_name es requerido");
-    if (!email) errors.push("email es requerido");
-    if (!verified) errors.push("verified es requerido");
+    // if (!email) errors.push("email es requerido");
+    if (!Validators.isBoolean(verified)) errors.push("verified es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];
@@ -60,7 +61,7 @@ export class AuthUserFromDiscordDto {
         discriminator,
         global_name,
         email,
-        verified,
+        verified ?? false,
       ),
     ];
   }

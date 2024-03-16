@@ -31,7 +31,8 @@ const discordUserSchema = new Schema<DiscordUserInterface>(
     },
     email: {
       type: Schema.Types.String,
-      required: [true, "El correo de discord es requerido"],
+      // required: [true, "El correo de discord es requerido"],
+      default: null,
     },
     verified: {
       type: Schema.Types.Boolean,
