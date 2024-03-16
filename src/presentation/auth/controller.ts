@@ -80,6 +80,7 @@ export class AuthController {
         ...responseUser,
         access_token,
       });
+      console.log(error);
       if (error !== null)
         throw CustomError.internalServer(
           "Mal formato en authUserFromDiscordDto",

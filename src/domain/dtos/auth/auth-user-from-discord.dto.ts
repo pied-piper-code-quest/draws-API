@@ -45,7 +45,7 @@ export class AuthUserFromDiscordDto {
     if (!discriminator) errors.push("discriminator es requerido");
     if (!global_name) errors.push("global_name es requerido");
     // if (!email) errors.push("email es requerido");
-    if (!Validators.isBoolean(verified)) errors.push("verified es requerido");
+    // if (!Validators.isBoolean(verified)) errors.push("verified es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];
