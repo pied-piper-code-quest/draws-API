@@ -8,6 +8,11 @@ const userAdminSchema = new Schema<UserAdminInterface>(
       required: [true, "El nombre de usuario es requerido"],
       unique: true,
     },
+    name: {
+      type: Schema.Types.String,
+      required: [true, "El nombre es requerido"],
+      unique: true,
+    },
     email: {
       type: Schema.Types.String,
       required: [true, "El correo es requerido"],

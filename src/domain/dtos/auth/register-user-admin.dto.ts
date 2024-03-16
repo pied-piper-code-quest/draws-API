@@ -3,16 +3,18 @@ import { DtoResponse } from "../../interfaces";
 
 export class RegisterUserAdminDto {
   private constructor(
+    public name: string,
     public username: string,
     public email: string,
     public password: string,
   ) {}
 
   static create(props: Record<string, any>): DtoResponse<RegisterUserAdminDto> {
-    const { username, email, password } = props;
+    const { name, username, email, password } = props;
 
     const errors: string[] = [];
 
+    if (!name) errors.push("name es requerido");
     if (!username) errors.push("username es requerido");
     if (!email) errors.push("email es requerido");
     if (!Validators.isEmail(email)) errors.push("Correo inválido");
@@ -27,9 +29,10 @@ export class RegisterUserAdminDto {
     return [
       null,
       new RegisterUserAdminDto(
-        (username as string).toLowerCase(),
-        (email as string).toLowerCase(),
-        password,
+        name,
+        (username as string).toLowerCase().trim(),
+        (email as string).toLowerCase().trim(),
+        (password as string).trim(),
       ),
     ];
   }

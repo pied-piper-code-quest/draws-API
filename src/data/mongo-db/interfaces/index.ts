@@ -3,6 +3,7 @@ import { Document } from "mongoose";
 // export interface UserAdminBase {
 export interface UserAdminInterface {
   username: string;
+  name: string;
   email: string;
   password: string;
   isActive: boolean;

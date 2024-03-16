@@ -17,9 +17,13 @@ export class LoginUserAdminDto {
       if (errors.length === 1) return [errors[0]];
       return [{ errors: errors }];
     }
+
     return [
       null,
-      new LoginUserAdminDto((username as string).toLowerCase(), password),
+      new LoginUserAdminDto(
+        (username as string).toLowerCase().trim(),
+        (password as string).trim(),
+      ),
     ];
   }
 }

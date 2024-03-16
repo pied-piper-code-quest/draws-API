@@ -50,6 +50,7 @@ export class UsersDatasource implements UsersDatasourceInterface {
     try {
       const userAdmin = await UserAdminModel.create({
         email: "admin@admin.com",
+        name: "Administrador",
         isActive: true,
         username: "admin",
         password: this.hashPassword("admin"),
