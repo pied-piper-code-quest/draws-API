@@ -14,11 +14,8 @@ export class DrawEntity {
     public available: boolean,
     public maxParticipants: number | null,
     public numberOfWinners: number,
-    // public alternativeWinners: number,
     public prizes: string[],
-    public resultDate: string | null,
     public maxDateToJoin: string | null,
-    // public manual: boolean,
     public participants: string[] | DiscordUserInterface[],
     public winners: string[] | DiscordUserInterface[],
 

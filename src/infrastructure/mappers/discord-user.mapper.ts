@@ -36,12 +36,6 @@ export class DiscordUserMapper {
     if (!globalName) {
       throw CustomError.badRequest("Falta globalName");
     }
-    // if (!email) {
-    //   throw CustomError.badRequest("Falta email");
-    // }
-    // if (!verified) {
-    //   throw CustomError.badRequest("Falta verified");
-    // }
     if (!createdAt) {
       throw CustomError.badRequest("Falta createdAt");
     }
@@ -55,8 +49,8 @@ export class DiscordUserMapper {
       avatar,
       discriminator,
       globalName,
-      email || "",
-      verified ?? false,
+      email,
+      verified,
       createdAt,
       updatedAt,
     );

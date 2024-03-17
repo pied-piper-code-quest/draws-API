@@ -8,11 +8,8 @@ export class CreateDrawDto {
     public createdBy: string,
     public maxParticipants: number | null,
     public numberOfWinners: number,
-    public alternativeWinners: number,
     public prizes: string[],
-    public resultDate: string | null,
     public maxDateToJoin: string | null,
-    public manual: boolean,
   ) {}
 
   static create(props: Record<string, any>): DtoResponse<CreateDrawDto> {
@@ -22,11 +19,8 @@ export class CreateDrawDto {
       createdBy,
       maxParticipants,
       numberOfWinners,
-      alternativeWinners,
       prizes,
-      resultDate,
       maxDateToJoin,
-      manual,
     } = props;
     const errors: string[] = [];
 
@@ -45,13 +39,8 @@ export class CreateDrawDto {
       errors.push(
         "La cantidad de premios debe ser igual al número de ganadores - prizes | numberOfWinners",
       );
-    if (alternativeWinners && alternativeWinners < 0)
-      errors.push("alternativeWinners debe ser mayor o igual a 0");
-    if (resultDate && !Validators.isDate(resultDate))
-      errors.push("Fecha de resultado inválida - resultDate");
     if (maxDateToJoin && !Validators.isDate(maxDateToJoin))
       errors.push("Fecha máxima para unirse inválida - maxDateToJoin");
-    if (!Validators.isBoolean(manual)) errors.push("manual es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];
@@ -65,11 +54,8 @@ export class CreateDrawDto {
         createdBy,
         maxParticipants || null,
         numberOfWinners,
-        alternativeWinners || 0,
         prizes,
-        resultDate,
         maxDateToJoin,
-        manual,
       ),
     ];
   }

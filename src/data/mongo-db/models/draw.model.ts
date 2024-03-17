@@ -35,25 +35,14 @@ const drawSchema = new Schema<DrawInterface>(
       default: 1,
       min: 1,
     },
-    alternativeWinners: {
-      type: Schema.Types.Number,
-      default: 0,
-    },
     prizes: [
       {
         type: Schema.Types.String,
       },
     ],
-    resultDate: {
-      type: Schema.Types.Date,
-      default: null,
-    },
     maxDateToJoin: {
       type: Schema.Types.Date,
       default: null,
-    },
-    manual: {
-      type: Schema.Types.Boolean,
     },
     participants: [
       {

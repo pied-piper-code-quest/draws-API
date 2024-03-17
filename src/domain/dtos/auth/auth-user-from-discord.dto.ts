@@ -23,16 +23,16 @@ export class AuthUserFromDiscordDto {
       username,
       avatar,
       discriminator,
-      public_flags,
-      premium_type,
-      flags,
-      banner,
-      accent_color,
+      // public_flags,
+      // premium_type,
+      // flags,
+      // banner,
+      // accent_color,
       global_name,
-      avatar_decoration_data,
-      banner_color,
-      mfa_enabled,
-      locale,
+      // avatar_decoration_data,
+      // banner_color,
+      // mfa_enabled,
+      // locale,
       email,
       verified,
     } = props;
@@ -44,8 +44,6 @@ export class AuthUserFromDiscordDto {
     if (!avatar) errors.push("avatar es requerido");
     if (!discriminator) errors.push("discriminator es requerido");
     if (!global_name) errors.push("global_name es requerido");
-    // if (!email) errors.push("email es requerido");
-    // if (!Validators.isBoolean(verified)) errors.push("verified es requerido");
 
     if (errors.length > 0) {
       if (errors.length === 1) return [errors[0]];
@@ -60,7 +58,7 @@ export class AuthUserFromDiscordDto {
         avatar,
         discriminator,
         global_name,
-        email,
+        email || "",
         verified ?? false,
       ),
     ];

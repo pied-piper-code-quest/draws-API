@@ -96,8 +96,6 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
     const { winners } = finishDrawDto;
 
     const verifiedWinners = winners;
-    // TODO: Implementar lógica para verificar que los usuarios existen en BBDD
-    // TODO: Implementar lógica para validar que los ganadores están en la comunidad de discord
     const draw = await this.findOneById(id);
 
     const drawParticipants = draw.participants as string[];

@@ -25,6 +25,7 @@ export interface DiscordUserInterface {
 
 export enum DrawStatus {
   pending = "pending",
+  live = "live",
   finished = "finished",
   canceled = "canceled",
 }
@@ -37,11 +38,9 @@ export interface DrawInterface {
   available: boolean;
   maxParticipants: number | null;
   numberOfWinners: number;
-  alternativeWinners: number;
   prizes: string[];
-  resultDate: string | null;
+
   maxDateToJoin: string | null;
-  manual: boolean;
   participants: string[] | DiscordUserInterface[];
   winners: string[] | DiscordUserInterface[];
 }
