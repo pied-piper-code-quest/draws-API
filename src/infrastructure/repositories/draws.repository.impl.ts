@@ -3,7 +3,7 @@ import type { DrawsDatasourceInterface } from "../../domain/datasources";
 import type {
   CreateDrawDto,
   FindWithPaginationDto,
-  FinishDrawDtoDto,
+  GenerateWinnerDto,
   UpdateDrawDto,
 } from "../../domain/dtos";
 import type { DrawEntity } from "../../domain/entities";
@@ -29,8 +29,11 @@ export class DrawsRepository implements DrawsRepositoryInterface {
   cancelDraw(id: string): Promise<DrawEntity> {
     return this.datasource.cancelDraw(id);
   }
-  finishDraw(id: string, finishDrawDto: FinishDrawDtoDto): Promise<DrawEntity> {
-    return this.datasource.finishDraw(id, finishDrawDto);
+  generateWinner(
+    id: string,
+    finishDrawDto: GenerateWinnerDto,
+  ): Promise<DrawEntity> {
+    return this.datasource.generateWinner(id, finishDrawDto);
   }
   subscribeToDraw(drawId: string, discordId: string): Promise<DrawEntity> {
     return this.datasource.subscribeToDraw(drawId, discordId);

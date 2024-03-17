@@ -17,7 +17,7 @@ export class DrawEntity {
     public prizes: string[],
     public maxDateToJoin: string | null,
     public participants: string[] | DiscordUserInterface[],
-    public winners: string[] | DiscordUserInterface[],
+    public winners: string[] | DiscordUserInterface[] | null[],
 
     public createdAt: string,
     public updatedAt: string,

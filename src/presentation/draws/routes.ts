@@ -41,8 +41,8 @@ export class DrawRoutes {
       authMiddleware.ValidateUser(UserType.admin),
       controller.cancelDraw,
     );
-    router.patch(
-      "/finish/:id",
+    router.post(
+      "/assign-winner/:id",
       authMiddleware.ValidateUser(UserType.admin),
       controller.finishDraw,
     );

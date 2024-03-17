@@ -4,7 +4,7 @@ import { DrawsRepositoryInterface } from "../../domain/repositories";
 import {
   CreateDrawDto,
   FindWithPaginationDto,
-  FinishDrawDtoDto,
+  GenerateWinnerDto,
   UpdateDrawDto,
 } from "../../domain/dtos";
 import { ResponseError } from "../custom-errors";
@@ -81,11 +81,14 @@ export class DrawsController {
   };
   finishDraw = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const [error, finishDrawDtoDto] = FinishDrawDtoDto.create(req.body);
+    const [error, generateWinnerDto] = GenerateWinnerDto.create(req.body);
     if (error !== null) return res.status(400).json({ message: error });
 
     try {
-      const draw = await this.drawsRepository.finishDraw(id, finishDrawDtoDto);
+      const draw = await this.drawsRepository.generateWinner(
+        id,
+        generateWinnerDto,
+      );
       // TODO: Enviar el evento de websockets para mostrar el resultado
       res.status(200).json(draw);
     } catch (error) {

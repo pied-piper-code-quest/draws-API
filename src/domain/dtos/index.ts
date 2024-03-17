@@ -6,4 +6,4 @@ export { FindWithPaginationDto } from "./common/find-with-pagination.dto";
 
 export { CreateDrawDto } from "./draws/create-draw.dto";
 export { UpdateDrawDto } from "./draws/update-draw.dto";
-export { FinishDrawDtoDto } from "./draws/finish-draw.dto";
+export { GenerateWinnerDto } from "./draws/generate-winner.dto";
