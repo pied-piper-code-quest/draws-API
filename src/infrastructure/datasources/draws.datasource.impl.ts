@@ -95,15 +95,16 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
     draw.available = false;
     draw.status = DrawStatus.live;
     await draw.save();
-    // TODO: Enviar por websockets que el sorteo ya inició
     return DrawMapper.DrawEntityFromObject(draw);
   };
   cancelDraw = async (id: string): Promise<DrawEntity> => {
     const draw = await this.findOneById(id);
+    if (draw.status !== DrawStatus.finished) {
+      throw CustomError.forbidden("El sorteo ya ha terminado");
+    }
     draw.available = false;
     draw.status = DrawStatus.canceled;
     await draw.save();
-    // TODO: Enviar por websockets que el sorteo se canceló
     return DrawMapper.DrawEntityFromObject(draw);
   };
   generateWinner = async (
@@ -150,6 +151,7 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
       if (i === winnerPosition - 1) {
         draw.winners[i] = selectedWinner;
         winnersReady++;
+        continue;
       }
       if (draw.winners[i]) {
         winnersReady++;
@@ -157,12 +159,18 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
         draw.winners[i] = null;
       }
     }
+
     if (winnersReady === draw.numberOfWinners) {
       draw.status = DrawStatus.finished;
-      // TODO: Enviar por websockets que el sorteo ya terminó
     }
     await draw.save();
-
+    await draw.populate([
+      "winners",
+      {
+        path: "winners",
+        select: "_id username avatar globalName",
+      },
+    ]);
     return DrawMapper.DrawEntityFromObject(draw);
   };
 
@@ -182,6 +190,12 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
 
     drawParticipants.push(discordId);
     draw.participants = drawParticipants;
+    if (
+      draw.maxParticipants &&
+      draw.participants.length === draw.maxParticipants
+    ) {
+      draw.available = false;
+    }
     await draw.save();
 
     return DrawMapper.DrawEntityFromObject(draw);

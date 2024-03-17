@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { Server as WSServer } from "socket.io";
 import type { DiscordOAuthProvider } from "../../config/oauth";
 import { DrawsRepositoryInterface } from "../../domain/repositories";
 import {
@@ -9,11 +10,13 @@ import {
 } from "../../domain/dtos";
 import { ResponseError } from "../custom-errors";
 import { CustomError } from "../../domain/errors";
+import { WEBSOCKETS_MESSAGES } from "../../domain/constants";
 
 export class DrawsController {
   private handleError = ResponseError;
 
   constructor(
+    private readonly webSockets: WSServer,
     private readonly drawsRepository: DrawsRepositoryInterface,
     private readonly OAuth: DiscordOAuthProvider,
   ) {}
@@ -53,6 +56,7 @@ export class DrawsController {
 
     try {
       const draw = await this.drawsRepository.createDraw(createDrawDto);
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
       res.status(201).json(draw);
     } catch (error) {
       this.handleError(error, res);
@@ -65,6 +69,17 @@ export class DrawsController {
 
     try {
       const draw = await this.drawsRepository.updateDraw(id, updateDrawDto);
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
+      res.status(200).json(draw);
+    } catch (error) {
+      this.handleError(error, res);
+    }
+  };
+  startDraw = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    try {
+      const draw = await this.drawsRepository.startDraw(id);
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);
@@ -74,12 +89,13 @@ export class DrawsController {
     const { id } = req.params;
     try {
       const draw = await this.drawsRepository.cancelDraw(id);
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);
     }
   };
-  finishDraw = async (req: Request, res: Response) => {
+  generateWinner = async (req: Request, res: Response) => {
     const { id } = req.params;
     const [error, generateWinnerDto] = GenerateWinnerDto.create(req.body);
     if (error !== null) return res.status(400).json({ message: error });
@@ -89,7 +105,11 @@ export class DrawsController {
         id,
         generateWinnerDto,
       );
-      // TODO: Enviar el evento de websockets para mostrar el resultado
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.NEW_WINNER, {
+        drawId: id,
+        winners: draw.winners,
+      });
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);
@@ -113,14 +133,13 @@ export class DrawsController {
         "El usuario no está en el servidor de discord de DevTalles.",
       );
     }
-    // const data = await checkGuildMemberResponse.json();
-    // console.log(data);
-    // const joinedAt = data.joined_at;
+
     try {
       const draw = await this.drawsRepository.subscribeToDraw(
         id,
         discordUserId,
       );
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);

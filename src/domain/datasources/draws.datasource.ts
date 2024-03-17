@@ -21,6 +21,8 @@ export abstract class DrawsDatasourceInterface {
     updateDrawDto: UpdateDrawDto,
   ): Promise<DrawEntity>;
 
+  abstract startDraw(id: string): Promise<DrawEntity>;
+
   abstract cancelDraw(id: string): Promise<DrawEntity>;
 
   abstract generateWinner(

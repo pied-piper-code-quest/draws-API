@@ -26,6 +26,9 @@ export class DrawsRepository implements DrawsRepositoryInterface {
   updateDraw(id: string, updateDrawDto: UpdateDrawDto): Promise<DrawEntity> {
     return this.datasource.updateDraw(id, updateDrawDto);
   }
+  startDraw(id: string): Promise<DrawEntity> {
+    return this.datasource.startDraw(id);
+  }
   cancelDraw(id: string): Promise<DrawEntity> {
     return this.datasource.cancelDraw(id);
   }
