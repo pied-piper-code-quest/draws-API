@@ -13,6 +13,7 @@ import type { ResponseWithPagination } from "../../domain/interfaces";
 import { type NeverReturn, handleDBError } from "../handle-errors";
 import { DrawMapper } from "../mappers";
 import { FindModelWithPagination } from "../utils";
+import { Validators } from "../../config";
 
 export class DrawsDatasource implements DrawsDatasourceInterface {
   private handleError: NeverReturn = handleDBError;
@@ -179,6 +180,14 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
     discordId: string,
   ): Promise<DrawEntity> => {
     const draw = await this.findOneById(drawId);
+    if (
+      draw.maxDateToJoin &&
+      Validators.dateIsBeforeOfNow(draw.maxDateToJoin)
+    ) {
+      draw.available = false;
+      await draw.save();
+      // throw CustomError.forbidden("El sorteo ya no se encuentra disponible");
+    }
     if (!draw.available) {
       throw CustomError.forbidden("El sorteo ya no se encuentra disponible");
     }
