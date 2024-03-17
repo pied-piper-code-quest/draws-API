@@ -3,28 +3,33 @@ import { Server as WebsocketsServer } from "socket.io";
 import http from "http";
 import cors from "cors";
 import morgan from "morgan";
-// import { envs } from "../config";
+import { envs } from "../config";
+import { AppWebsockets } from "./websockets";
+import { AppRoutes } from "./routes";
 
 interface Options {
   port: number;
   routes: Router;
-  gateways: (io: WebsocketsServer) => void;
 }
+
+const AppExpress = express();
+const ServerHTTP = http.createServer(AppExpress);
+const SocketsIO = new WebsocketsServer(ServerHTTP);
+export const webSockets = new AppWebsockets(SocketsIO);
+
 export class Server {
-  private readonly app = express();
-  private readonly server = http.createServer(this.app);
-  private readonly io = new WebsocketsServer(this.server);
+  private readonly app = AppExpress;
+  private readonly server = ServerHTTP;
+  private readonly io = SocketsIO;
 
   private readonly port: number;
   private readonly logger = morgan;
   private readonly routes: Router;
-  private readonly gateways: (io: WebsocketsServer) => void;
 
   constructor(options: Options) {
-    const { port, routes, gateways } = options;
+    const { port, routes } = options;
     this.port = port;
     this.routes = routes;
-    this.gateways = gateways;
   }
 
   async start() {
@@ -37,7 +42,6 @@ export class Server {
 
     // Routes & Gateways
     this.app.use("/api", this.routes);
-    this.gateways(this.io);
 
     // Start server
     this.server.listen(this.port, () => {

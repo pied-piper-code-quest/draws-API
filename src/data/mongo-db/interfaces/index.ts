@@ -42,6 +42,6 @@ export interface DrawInterface {
 
   maxDateToJoin: string | null;
   participants: string[] | DiscordUserInterface[];
-  winners: string[] | DiscordUserInterface[];
+  winners: (string | null)[] | (DiscordUserInterface | null)[];
 }
 // export interface DrawInterface extends DrawBase, Document {}

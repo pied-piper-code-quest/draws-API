@@ -18,7 +18,12 @@ const drawSchema = new Schema<DrawInterface>(
     },
     status: {
       type: Schema.Types.String,
-      enum: [DrawStatus.pending, DrawStatus.finished, DrawStatus.canceled],
+      enum: [
+        DrawStatus.pending,
+        DrawStatus.live,
+        DrawStatus.finished,
+        DrawStatus.canceled,
+      ],
       default: DrawStatus.pending,
     },
     available: {

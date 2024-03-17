@@ -1,7 +1,7 @@
 import {
   CreateDrawDto,
   FindWithPaginationDto,
-  FinishDrawDtoDto,
+  GenerateWinnerDto,
   UpdateDrawDto,
 } from "../dtos";
 import type { DrawEntity } from "../entities";
@@ -21,11 +21,13 @@ export abstract class DrawsRepositoryInterface {
     updateDrawDto: UpdateDrawDto,
   ): Promise<DrawEntity>;
 
+  abstract startDraw(id: string): Promise<DrawEntity>;
+
   abstract cancelDraw(id: string): Promise<DrawEntity>;
 
-  abstract finishDraw(
+  abstract generateWinner(
     id: string,
-    finishDrawDto: FinishDrawDtoDto,
+    generateWinnerDto: GenerateWinnerDto,
   ): Promise<DrawEntity>;
 
   abstract subscribeToDraw(

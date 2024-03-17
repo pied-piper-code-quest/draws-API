@@ -4,6 +4,7 @@ import { UserType } from "../../domain/entities";
 import { DrawsDatasource, DrawsRepository } from "../../infrastructure";
 import { DrawsController } from "./controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
+import { webSockets } from "../server";
 
 export class DrawRoutes {
   static get routes(): Router {
@@ -13,6 +14,7 @@ export class DrawRoutes {
     const drawsRepository = new DrawsRepository(datasource);
 
     const controller = new DrawsController(
+      webSockets.io,
       drawsRepository,
       OAuthAdapter.Discord,
     );
@@ -41,10 +43,16 @@ export class DrawRoutes {
       authMiddleware.ValidateUser(UserType.admin),
       controller.cancelDraw,
     );
-    router.patch(
-      "/finish/:id",
+
+    router.post(
+      "/start/:id",
       authMiddleware.ValidateUser(UserType.admin),
-      controller.finishDraw,
+      controller.startDraw,
+    );
+    router.post(
+      "/assign-winner/:id",
+      authMiddleware.ValidateUser(UserType.admin),
+      controller.generateWinner,
     );
 
     return router;

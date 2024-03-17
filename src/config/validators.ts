@@ -17,10 +17,10 @@ export class Validators {
     const parseDate = new Date(value).toString();
     return parseDate !== "Invalid Date";
   }
-  static dateIsAfterOfToday(date: string) {
+  static dateIsBeforeOfNow(date: string) {
     const now = Date.now();
     const dateValue = new Date(date).getTime();
-    return dateValue > now;
+    return now >= dateValue;
   }
   static dateIsAfterOf(date: string, toCompare: string) {
     const dateValue = new Date(date).getTime();
