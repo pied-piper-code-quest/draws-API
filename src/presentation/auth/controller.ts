@@ -83,7 +83,7 @@ export class AuthController {
       console.log(error);
       if (error !== null)
         throw CustomError.internalServer(
-          "Mal formato en authUserFromDiscordDto",
+          "Mal formato en authUserFromDiscordDto: " + error,
         );
       const discordUser = await this.authRepository.authFromDiscord(
         authUserFromDiscordDto,
@@ -93,7 +93,7 @@ export class AuthController {
         userType: UserType.discord,
       });
       return res.json({
-        user: responseUser,
+        user: discordUser,
         token: newToken,
       });
     } catch (err: any) {
