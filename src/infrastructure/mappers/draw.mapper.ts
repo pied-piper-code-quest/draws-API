@@ -30,7 +30,6 @@ export class DrawMapper {
       createdAt,
       updatedAt,
     } = props;
-
     if (!id && !_id) {
       throw CustomError.badRequest("Falta id");
     }

@@ -1,5 +1,10 @@
 import type { FilterQuery } from "mongoose";
-import { type DrawInterface, DrawModel, DrawStatus } from "../../data/mongo-db";
+import {
+  type DrawInterface,
+  DrawModel,
+  DrawStatus,
+  DiscordUserInterface,
+} from "../../data/mongo-db";
 import { DrawsDatasourceInterface } from "../../domain/datasources";
 import type {
   CreateDrawDto,
@@ -62,7 +67,27 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
   };
   findOne = async (id: string): Promise<DrawEntity> => {
     const draw = await this.findOneById(id);
-    return DrawMapper.DrawEntityFromObject(draw);
+    const winners = [...draw.winners];
+    await draw.populate([
+      "winners",
+      {
+        path: "winners",
+        select: "_id discordId username avatar globalName",
+      },
+    ]);
+
+    return DrawMapper.DrawEntityFromObject({
+      // @ts-ignore
+      ...draw._doc,
+      winners: winners.map(item => {
+        const findWinner = draw.winners.find(winner => {
+          // @ts-ignore
+          return item?.toString() === winner?._id.toString();
+        });
+        if (findWinner) return findWinner;
+        return null;
+      }),
+    });
   };
   createDraw = async (createDrawDto: CreateDrawDto): Promise<DrawEntity> => {
     try {
@@ -167,14 +192,27 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
       draw.status = DrawStatus.finished;
     }
     await draw.save();
+    const winners = [...draw.winners];
     await draw.populate([
       "winners",
       {
         path: "winners",
-        select: "_id username avatar globalName",
+        select: "_id discordId username avatar globalName",
       },
     ]);
-    return DrawMapper.DrawEntityFromObject(draw);
+
+    return DrawMapper.DrawEntityFromObject({
+      // @ts-ignore
+      ...draw._doc,
+      winners: winners.map(item => {
+        const findWinner = draw.winners.find(winner => {
+          // @ts-ignore
+          return item?.toString() === winner?._id.toString();
+        });
+        if (findWinner) return findWinner;
+        return null;
+      }),
+    });
   };
 
   subscribeToDraw = async (

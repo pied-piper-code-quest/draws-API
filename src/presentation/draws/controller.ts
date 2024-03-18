@@ -80,6 +80,7 @@ export class DrawsController {
     try {
       const draw = await this.drawsRepository.startDraw(id);
       this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
+      this.webSockets.emit(WEBSOCKETS_MESSAGES.START_DRAW, draw.id);
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);
@@ -100,16 +101,19 @@ export class DrawsController {
     const [error, generateWinnerDto] = GenerateWinnerDto.create(req.body);
     if (error !== null) return res.status(400).json({ message: error });
 
+    this.webSockets.emit(WEBSOCKETS_MESSAGES.WAITING_WINNER, {
+      drawId: id,
+      position: generateWinnerDto.winnerPosition,
+    });
     try {
       const draw = await this.drawsRepository.generateWinner(
         id,
         generateWinnerDto,
       );
       this.webSockets.emit(WEBSOCKETS_MESSAGES.REFRESH_DRAWS_LIST);
-      this.webSockets.emit(WEBSOCKETS_MESSAGES.NEW_WINNER, {
-        drawId: id,
-        winners: draw.winners,
-      });
+      setTimeout(() => {
+        this.webSockets.emit(WEBSOCKETS_MESSAGES.NEW_WINNER, draw.id);
+      }, 6000);
       res.status(200).json(draw);
     } catch (error) {
       this.handleError(error, res);

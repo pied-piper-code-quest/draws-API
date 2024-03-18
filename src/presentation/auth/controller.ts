@@ -10,6 +10,8 @@ import type {
   TokenResponse,
 } from "../../config/oauth";
 import { UserType } from "../../domain/entities";
+import { UserAdminMapper } from "../../infrastructure";
+import { DiscordUserMapper } from "../../infrastructure/mappers";
 
 export class AuthController {
   private handleError = ResponseError;
@@ -107,10 +109,32 @@ export class AuthController {
     const user = req.discordUser || req.userAdmin;
     // @ts-ignore
     const userType = req.userType;
-    res.send({ user, userType });
+    let userData;
+    if (userType === UserType.admin) {
+      userData = UserAdminMapper.UserAdminEntityFromObject(user!);
+    } else {
+      userData = DiscordUserMapper.DiscordUserEntityFromObject(user!);
+    }
+    console.log(userData);
+    res.send({ user: userData, userType });
   };
 
   private generateUserToken = (payload: TokenPayload) => {
     return JwtAdapter.generateToken(payload);
   };
 }
+
+// localStorage.setItem(
+//   "auth-store",
+//   JSON.stringify({
+//     state: { version: 0, token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjRmNDZhMmIxOGZhY2UyODU2NzBlYyIsInVzZXJUeXBlIjoiZGlzY29yZCIsImlhdCI6MTcxMDc0MDk4MiwiZXhwIjoxNzExMzQ1NzgyfQ.MIv3rljY_DDoRp4c3QVkVOCz3ANEGFkL5VYe89tFELY", isLoading: false, authData: {
+//         id: '65f4f46a2b18face285670ec',
+//         discordId: '709373916430336062',
+//         username: 'codeslator',
+//         avatar: 'e347cb96409b913f616accdf8b523e89',
+//         email: null,
+//         createdAt: "2024-03-18T02:32:22.308Z",
+//         updatedAt: "2024-03-18T02:32:22.308Z"
+//     } },
+//   }),
+// );
