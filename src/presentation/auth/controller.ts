@@ -115,7 +115,6 @@ export class AuthController {
     } else {
       userData = DiscordUserMapper.DiscordUserEntityFromObject(user!);
     }
-    console.log(userData);
     res.send({ user: userData, userType });
   };
 
