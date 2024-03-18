@@ -11,10 +11,7 @@ export class DiscordUserMapper {
       discordId,
       username,
       avatar,
-      discriminator,
-      globalName,
       email,
-      verified,
       createdAt,
       updatedAt,
     } = props;
@@ -27,15 +24,7 @@ export class DiscordUserMapper {
     if (!username) {
       throw CustomError.badRequest("Falta username");
     }
-    if (!avatar) {
-      throw CustomError.badRequest("Falta avatar");
-    }
-    if (!discriminator) {
-      throw CustomError.badRequest("Falta discriminator");
-    }
-    if (!globalName) {
-      throw CustomError.badRequest("Falta globalName");
-    }
+
     if (!createdAt) {
       throw CustomError.badRequest("Falta createdAt");
     }
@@ -46,11 +35,8 @@ export class DiscordUserMapper {
       id || _id,
       discordId,
       username,
-      avatar,
-      discriminator,
-      globalName,
-      email,
-      verified,
+      avatar || null,
+      email || null,
       createdAt,
       updatedAt,
     );

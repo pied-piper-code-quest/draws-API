@@ -50,6 +50,7 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
       filter: query,
       limit,
       page,
+      sort: { createdAt: -1 },
     });
 
     return {
@@ -88,6 +89,7 @@ export class DrawsDatasource implements DrawsDatasourceInterface {
   };
   startDraw = async (id: string): Promise<DrawEntity> => {
     const draw = await this.findOneById(id);
+    console.log(draw.status);
     if (draw.status !== DrawStatus.pending) {
       throw CustomError.badRequest(
         "El sorteo debe estar en pendiente para comenzar",

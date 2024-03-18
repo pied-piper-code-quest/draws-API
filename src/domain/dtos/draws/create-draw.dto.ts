@@ -55,7 +55,7 @@ export class CreateDrawDto {
         maxParticipants || null,
         numberOfWinners,
         prizes,
-        maxDateToJoin,
+        maxDateToJoin || null,
       ),
     ];
   }
