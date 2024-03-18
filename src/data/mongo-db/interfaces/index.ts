@@ -15,11 +15,8 @@ export interface DiscordUserInterface {
   access_token: string;
   discordId: string;
   username: string;
-  avatar: string;
-  discriminator: string;
-  globalName: string;
-  email: string;
-  verified: boolean;
+  avatar: string | null;
+  email: string | null;
 }
 // export interface DiscordUserInterface extends DiscordUserBase, Document {}
 

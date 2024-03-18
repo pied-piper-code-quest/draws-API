@@ -19,24 +19,11 @@ const discordUserSchema = new Schema<DiscordUserInterface>(
     },
     avatar: {
       type: Schema.Types.String,
-      required: [true, "El avatar de discord es requerido"],
-    },
-    discriminator: {
-      type: Schema.Types.String,
-      required: [true, "El discriminator de discord es requerido"],
-    },
-    globalName: {
-      type: Schema.Types.String,
-      required: [true, "El nombre global de discord es requerido"],
+      default: null,
     },
     email: {
       type: Schema.Types.String,
-      // required: [true, "El correo de discord es requerido"],
       default: null,
-    },
-    verified: {
-      type: Schema.Types.Boolean,
-      required: [true, "El valor de verified en discord es requerido"],
     },
   },
   { timestamps: true, versionKey: false },
